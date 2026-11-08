@@ -79,18 +79,18 @@
          BAGIAN 1: PORTAL LOGIN & PENDAFTARAN BERSIH (Tampil Sebelum Login)
     ====================================================================== -->
     <div id="authPortalView" class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 p-4">
-        
-        <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-200/80 overflow-hidden">
-            <!-- Header Portal -->
-            <div class="p-6 sm:p-7 bg-slate-900 text-white text-center space-y-2">
-                <div class="w-12 h-12 rounded-2xl bg-brand-600 flex items-center justify-center text-white mx-auto shadow-lg shadow-brand-500/30">
+                    <div class="w-12 h-12 rounded-2xl bg-brand-600 flex items-center justify-center text-white mx-auto shadow-lg shadow-brand-500/30">
                     <i class="ph-bold ph-notebook text-2xl"></i>
                 </div>
                 <div class="flex items-center justify-center gap-1.5 pt-1">
                     <h1 class="font-extrabold text-xl tracking-tight text-white">BukuKasKu</h1>
-                    <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">PRO</span>
+                    <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">CLOUD PRO</span>
                 </div>
-                <p class="text-xs text-slate-400">Sistem Pembukuan Kas & Rincian Keuangan</p>
+                <p class="text-xs text-slate-400">Sistem Pembukuan Kas & Rincian Terhubung Google Sheets</p>
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-800/90 border border-slate-700 text-[10px] text-emerald-400 font-medium">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>Server Cloud Google Sheets Aktif</span>
+                </div>
             </div>
 
             <!-- Tab Navigasi: Masuk vs Daftar Akun Baru -->
@@ -141,9 +141,9 @@
                     </label>
                 </div>
 
-                <button type="submit" class="w-full py-3 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2">
+                <button type="submit" id="btnSubmitLogin" class="w-full py-3 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-60">
                     <i class="ph-bold ph-sign-in text-base"></i>
-                    <span>Masuk ke Pembukuan</span>
+                    <span>Masuk & Ambil Data Cloud</span>
                 </button>
 
                 <p class="text-center text-xs text-slate-500 pt-2">
@@ -181,9 +181,9 @@
                     </div>
                 </div>
 
-                <button type="submit" class="w-full py-3 text-sm font-bold text-white bg-slate-900 hover:bg-brand-600 rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                <button type="submit" id="btnSubmitRegister" class="w-full py-3 text-sm font-bold text-white bg-slate-900 hover:bg-brand-600 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-60">
                     <i class="ph-bold ph-user-plus text-base"></i>
-                    <span>Daftar & Buat Buku Kas Kosong</span>
+                    <span>Daftar Akun ke Cloud</span>
                 </button>
 
                 <p class="text-center text-xs text-slate-500 pt-2">
@@ -224,10 +224,10 @@
                 
                 <!-- Tombol Aksi Header -->
                 <div class="flex items-center gap-1.5 sm:gap-2">
-                    <!-- Tombol Sinkronisasi Cloud GAS / Backup JSON -->
-                    <button onclick="openCloudModal()" class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 text-xs font-medium text-emerald-300 bg-slate-800 border border-slate-700 rounded-xl hover:bg-slate-700 transition-colors" title="Sinkronisasi Cloud GAS / Backup JSON">
-                        <i class="ph-bold ph-cloud-arrow-up text-base"></i>
-                        <span class="hidden lg:inline">Cloud / Backup</span>
+                    <!-- Indikator Status Cloud Langsung -->
+                    <button onclick="openCloudModal()" id="headerCloudBtn" class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 text-xs font-medium text-emerald-300 bg-slate-800 border border-slate-700 rounded-xl hover:bg-slate-700 transition-colors" title="Status Cloud Google Sheets & Cadangan Data">
+                        <i id="headerCloudIcon" class="ph-bold ph-cloud-check text-base text-emerald-400"></i>
+                        <span id="headerCloudText" class="hidden lg:inline">Cloud Tersinkronisasi</span>
                     </button>
 
                     <button onclick="exportToCSV()" class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 text-xs font-medium text-slate-200 bg-slate-800 border border-slate-700 rounded-xl hover:bg-slate-700 transition-colors" title="Unduh CSV Excel">
@@ -514,23 +514,26 @@
             </div>
 
             <div class="p-6 space-y-5 text-xs">
-                <!-- Bagian Google Apps Script -->
+                <!-- Bagian Google Apps Script API -->
                 <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
-                    <div class="font-bold text-slate-800 text-sm flex items-center justify-between">
-                        <span>1. Sinkronisasi Google Sheets (Google Apps Script)</span>
-                        <span id="gasBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">Mode Lokal / GitHub</span>
+                    <div class="font-bold text-slate-800 text-sm flex items-center justify-between gap-2">
+                        <span>1. Sinkronisasi Server Google Sheets (Otomatis)</span>
+                        <span id="gasBadge" class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700">Terhubung ke Cloud</span>
                     </div>
                     <p class="text-slate-500 leading-relaxed">
-                        Jika aplikasi ini dibuka dari URL Web App <b>Google Apps Script</b>, gunakan tombol di bawah untuk menyimpan atau memuat seluruh database dari sel <code class="font-bold">A1</code> Google Sheets Anda.
+                        Aplikasi ini sudah terhubung langsung ke Google Sheets API Anda. Setiap kali Anda menambah, mengubah, atau menghapus transaksi, data otomatis dikirim ke Google Sheets. Anda juga dapat menekan tombol manual di bawah:
                     </p>
+                    <div class="p-2.5 rounded-xl bg-white border border-slate-200 text-[11px] text-slate-500 font-mono break-all">
+                        Endpoint: https://script.google.com/macros/s/AKfycbzVWJfeLRNdq1A0aSdRueTNPJ_ZUY25bf7CfuvkGKYWZPneYE5J1Ud6jl8WMRYxoLRyTA/exec
+                    </div>
                     <div class="flex flex-wrap gap-2 pt-1">
-                        <button onclick="syncToGoogleSheet()" class="inline-flex items-center gap-1.5 px-3.5 py-2 font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-xl transition-colors">
+                        <button type="button" id="btnManualPushCloud" onclick="syncToGoogleSheet(true)" class="inline-flex items-center gap-1.5 px-3.5 py-2 font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-xl transition-colors">
                             <i class="ph-bold ph-cloud-arrow-up"></i>
-                            <span>Simpan ke Google Sheet</span>
+                            <span>Simpan Paksa ke Cloud Sekarang</span>
                         </button>
-                        <button onclick="loadFromGoogleSheet()" class="inline-flex items-center gap-1.5 px-3.5 py-2 font-semibold text-slate-700 bg-white border border-slate-300 hover:bg-slate-100 rounded-xl transition-colors">
+                        <button type="button" id="btnManualPullCloud" onclick="loadFromGoogleSheet(true)" class="inline-flex items-center gap-1.5 px-3.5 py-2 font-semibold text-slate-700 bg-white border border-slate-300 hover:bg-slate-100 rounded-xl transition-colors">
                             <i class="ph-bold ph-cloud-arrow-down"></i>
-                            <span>Ambil dari Google Sheet</span>
+                            <span>Tarik Data Terbaru dari Cloud</span>
                         </button>
                     </div>
                 </div>
@@ -696,20 +699,67 @@
 
     <script>
         // =========================================================================
-        // KONFIGURASI MULTI-USER & PENYIMPANAN DATA MANDIRI TANPA DATA CONTOH
+        // KONFIGURASI URL GOOGLE APPS SCRIPT (GAS) CLOUD SERVER ANDA
         // =========================================================================
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzVWJfeLRNdq1A0aSdRueTNPJ_ZUY25bf7CfuvkGKYWZPneYE5J1Ud6jl8WMRYxoLRyTA/exec";
+
         const STORAGE_USERS_KEY = 'BUKUKASKU_USERS_V3';
         const STORAGE_ACTIVE_USER_KEY = 'BUKUKASKU_ACTIVE_USER_V3';
 
-        // Setiap pengguna mulai dari Saldo Awal Rp 0 dan Tabel Kosong []
+        // Setiap pengguna baru mulai dari Saldo Awal Rp 0 dan Tabel Kosong []
         let currentUser = null; // { username, businessName, password }
         let rawEntries = [];
         let initialBookBalance = 0;
         let expandedIds = new Set();
         let allExpanded = false;
+        let isCloudSyncing = false;
 
         // =========================================================================
-        // SISTEM MULTI-USER: PENDAFTARAN (REGISTER) & LOGIN MANDIRI
+        // FUNGSI KOMUNIKASI KE SERVER GOOGLE SHEETS (FETCH POST)
+        // =========================================================================
+        function setCloudStatusIndicator(state, message) {
+            const btn = document.getElementById('headerCloudBtn');
+            const icon = document.getElementById('headerCloudIcon');
+            const text = document.getElementById('headerCloudText');
+            const footer = document.getElementById('syncStatusFooter');
+            if (!btn || !icon || !text) return;
+
+            if (state === 'SYNCING') {
+                icon.className = 'ph-bold ph-arrows-clockwise animate-spin text-base text-amber-400';
+                text.textContent = message || 'Menyimpan ke Cloud...';
+                if (footer) {
+                    footer.innerHTML = `<i class="ph-bold ph-arrows-clockwise animate-spin text-amber-500"></i><span>Sedang menyinkronkan data ke Google Sheets Cloud...</span>`;
+                }
+            } else if (state === 'SUCCESS') {
+                icon.className = 'ph-bold ph-cloud-check text-base text-emerald-400';
+                text.textContent = message || 'Cloud Tersinkronisasi';
+                if (footer) {
+                    footer.innerHTML = `<i class="ph-fill ph-cloud-check text-emerald-500"></i><span>Tersinkronisasi otomatis dengan Google Sheets Cloud & LocalStorage</span>`;
+                }
+            } else if (state === 'OFFLINE') {
+                icon.className = 'ph-bold ph-cloud-warning text-base text-amber-400';
+                text.textContent = message || 'Tersimpan Lokal';
+                if (footer) {
+                    footer.innerHTML = `<i class="ph-fill ph-warning-circle text-amber-500"></i><span>Tersimpan di browser (Menunggu jaringan untuk sinkron ke Google Sheets)</span>`;
+                }
+            }
+        }
+
+        async function callGasApi(payload) {
+            const response = await fetch(GAS_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8'
+                },
+                body: JSON.stringify(payload),
+                redirect: 'follow'
+            });
+            const text = await response.text();
+            return JSON.parse(text);
+        }
+
+        // =========================================================================
+        // SISTEM MULTI-USER: PENDAFTARAN (REGISTER) & LOGIN TERHUBUNG CLOUD
         // =========================================================================
         function getRegisteredUsers() {
             try {
@@ -726,6 +776,24 @@
             } catch (e) {
                 console.error('Gagal menyimpan daftar pengguna:', e);
             }
+        }
+
+        function upsertLocalUserRecord(username, password, businessName) {
+            const users = getRegisteredUsers();
+            const idx = users.findIndex(u => u.username.toLowerCase() === username.toLowerCase());
+            const record = {
+                username: username.toLowerCase(),
+                password: password,
+                businessName: businessName || username,
+                updatedAt: new Date().toISOString()
+            };
+            if (idx !== -1) {
+                users[idx] = { ...users[idx], ...record };
+            } else {
+                users.push(record);
+            }
+            saveRegisteredUsers(users);
+            return record;
         }
 
         function switchAuthTab(mode) {
@@ -763,78 +831,149 @@
             if (type === 'SUCCESS') {
                 box.className = 'p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium flex items-center gap-2';
                 icon.className = 'ph-fill ph-check-circle text-base shrink-0 text-emerald-600';
+            } else if (type === 'INFO') {
+                box.className = 'p-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-xs font-medium flex items-center gap-2';
+                icon.className = 'ph-bold ph-spinner animate-spin text-base shrink-0 text-blue-600';
             } else {
                 box.className = 'p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-center gap-2';
                 icon.className = 'ph-fill ph-warning-circle text-base shrink-0 text-rose-600';
             }
         }
 
-        function handleRegisterSubmit(e) {
+        async function handleRegisterSubmit(e) {
             e.preventDefault();
             const businessName = document.getElementById('regBusinessName').value.trim();
             const username = document.getElementById('regUsername').value.trim().toLowerCase().replace(/\s+/g, '');
             const password = document.getElementById('regPassword').value;
+            const btn = document.getElementById('btnSubmitRegister');
 
             if (!businessName || !username || !password) {
                 showAuthAlert('Mohon lengkapi seluruh kolom pendaftaran.');
                 return;
             }
 
-            const users = getRegisteredUsers();
-            const exists = users.some(u => u.username.toLowerCase() === username);
-            if (exists) {
-                showAuthAlert(`Username "${username}" sudah terdaftar. Silakan gunakan username lain.`);
-                return;
+            btn.disabled = true;
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = `<i class="ph-bold ph-spinner animate-spin text-base"></i><span>Mendaftarkan ke Cloud...</span>`;
+            showAuthAlert('Sedang mendaftarkan akun ke Google Sheets Cloud...', 'INFO');
+
+            try {
+                const res = await callGasApi({
+                    action: 'register',
+                    username: username,
+                    password: password,
+                    businessName: businessName
+                });
+
+                if (res && res.status === 'error') {
+                    showAuthAlert(res.message || 'Gagal mendaftar: Username mungkin sudah dipakai.');
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                    return;
+                }
+
+                // Simpan akun & buku kas kosong ke LocalStorage
+                const userRecord = upsertLocalUserRecord(username, password, businessName);
+                localStorage.setItem(`BUKUKASKU_INIT_BAL_${username}`, '0');
+                localStorage.setItem(`BUKUKASKU_ENTRIES_${username}`, JSON.stringify([]));
+
+                currentUser = userRecord;
+                localStorage.setItem(STORAGE_ACTIVE_USER_KEY, username);
+                document.getElementById('registerForm').reset();
+                setCloudStatusIndicator('SUCCESS', 'Cloud Tersinkronisasi');
+                enterUserDashboard(true, `Akun "${businessName}" terdaftar di Google Sheets Cloud!`);
+            } catch (err) {
+                // Fallback ke LocalStorage jika koneksi internet sedang bermasalah
+                const users = getRegisteredUsers();
+                if (users.some(u => u.username.toLowerCase() === username)) {
+                    showAuthAlert(`Username "${username}" sudah terdaftar di perangkat ini.`);
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                    return;
+                }
+                const userRecord = upsertLocalUserRecord(username, password, businessName);
+                localStorage.setItem(`BUKUKASKU_INIT_BAL_${username}`, '0');
+                localStorage.setItem(`BUKUKASKU_ENTRIES_${username}`, JSON.stringify([]));
+
+                currentUser = userRecord;
+                localStorage.setItem(STORAGE_ACTIVE_USER_KEY, username);
+                document.getElementById('registerForm').reset();
+                setCloudStatusIndicator('OFFLINE', 'Mode Lokal');
+                enterUserDashboard(true, `Akun "${businessName}" berhasil dibuat!`);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
             }
-
-            const newUser = {
-                username: username,
-                businessName: businessName,
-                password: password,
-                createdAt: new Date().toISOString()
-            };
-
-            users.push(newUser);
-            saveRegisteredUsers(users);
-
-            // Inisialisasi data buku kas kosong (Rp 0 dan tanpa contoh) untuk user baru
-            localStorage.setItem(`BUKUKASKU_INIT_BAL_${username}`, '0');
-            localStorage.setItem(`BUKUKASKU_ENTRIES_${username}`, JSON.stringify([]));
-
-            // Langsung login ke akun baru
-            currentUser = newUser;
-            localStorage.setItem(STORAGE_ACTIVE_USER_KEY, username);
-            document.getElementById('registerForm').reset();
-            enterUserDashboard(true, `Akun "${businessName}" berhasil dibuat!`);
         }
 
-        function handleLoginSubmit(e) {
+        async function handleLoginSubmit(e) {
             e.preventDefault();
             const u = document.getElementById('loginUsername').value.trim().toLowerCase();
             const p = document.getElementById('loginPassword').value;
             const remember = document.getElementById('rememberSession').checked;
+            const btn = document.getElementById('btnSubmitLogin');
 
-            const users = getRegisteredUsers();
-            if (users.length === 0) {
-                showAuthAlert('Belum ada akun terdaftar di perangkat ini. Silakan klik tab "Daftar Akun" terlebih dahulu.');
-                return;
+            btn.disabled = true;
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = `<i class="ph-bold ph-spinner animate-spin text-base"></i><span>Mengambil Data dari Cloud...</span>`;
+            showAuthAlert('Memverifikasi akun & mengambil data dari Google Sheets...', 'INFO');
+
+            try {
+                const res = await callGasApi({
+                    action: 'login',
+                    username: u,
+                    password: p
+                });
+
+                if (res && res.status === 'success') {
+                    const bizName = (res.user && res.user.businessName) ? res.user.businessName : u;
+                    const userRecord = upsertLocalUserRecord(u, p, bizName);
+                    currentUser = userRecord;
+
+                    // Ekstrak data pembukuan dari Google Sheets
+                    const cloudData = res.data || {};
+                    const cloudInitBal = Number(cloudData.openingBalance !== undefined ? cloudData.openingBalance : cloudData.initialBalance) || 0;
+                    const cloudEntries = Array.isArray(cloudData.transactions)
+                        ? cloudData.transactions
+                        : (Array.isArray(cloudData.entries) ? cloudData.entries : []);
+
+                    localStorage.setItem(`BUKUKASKU_INIT_BAL_${u}`, String(cloudInitBal));
+                    localStorage.setItem(`BUKUKASKU_ENTRIES_${u}`, JSON.stringify(cloudEntries));
+
+                    if (remember) {
+                        localStorage.setItem(STORAGE_ACTIVE_USER_KEY, u);
+                    } else {
+                        sessionStorage.setItem(STORAGE_ACTIVE_USER_KEY, u);
+                    }
+
+                    document.getElementById('loginForm').reset();
+                    setCloudStatusIndicator('SUCCESS', 'Cloud Tersinkronisasi');
+                    enterUserDashboard(true, `Selamat datang, ${bizName}! Data Cloud berhasil dimuat.`);
+                    return;
+                } else {
+                    showAuthAlert((res && res.message) ? res.message : 'Username atau password salah! Silakan daftar jika belum punya akun.');
+                }
+            } catch (err) {
+                // Fallback cek LocalStorage apabila jaringan tidak menjangkau GAS
+                const users = getRegisteredUsers();
+                const matched = users.find(acc => acc.username.toLowerCase() === u && acc.password === p);
+                if (matched) {
+                    currentUser = matched;
+                    if (remember) {
+                        localStorage.setItem(STORAGE_ACTIVE_USER_KEY, matched.username);
+                    } else {
+                        sessionStorage.setItem(STORAGE_ACTIVE_USER_KEY, matched.username);
+                    }
+                    document.getElementById('loginForm').reset();
+                    setCloudStatusIndicator('OFFLINE', 'Mode Lokal');
+                    enterUserDashboard(true, `Masuk sebagai ${matched.businessName} (Data Lokal)`);
+                    return;
+                }
+                showAuthAlert('Gagal terhubung ke server Cloud atau akun belum terdaftar. Pastikan koneksi internet aktif.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
             }
-
-            const matched = users.find(acc => acc.username.toLowerCase() === u && acc.password === p);
-            if (!matched) {
-                showAuthAlert('Username atau password salah. Pastikan Anda sudah mendaftar.');
-                return;
-            }
-
-            currentUser = matched;
-            if (remember) {
-                localStorage.setItem(STORAGE_ACTIVE_USER_KEY, matched.username);
-            } else {
-                sessionStorage.setItem(STORAGE_ACTIVE_USER_KEY, matched.username);
-            }
-
-            document.getElementById('loginForm').reset();
-            enterUserDashboard(true, `Selamat datang, ${matched.businessName}!`);
         }
 
         function checkSessionOnLoad() {
@@ -846,17 +985,14 @@
                 if (found) {
                     currentUser = found;
                     enterUserDashboard(false);
+                    // Tarik pembaruan data terbaru dari Google Sheets di latar belakang
+                    loadFromGoogleSheet(false);
                     return;
                 }
             }
 
-            // Jika belum ada satupun akun terdaftar, arahkan langsung ke tab Daftar Akun agar konsumen mudah mulai
             showAuthPortal();
-            if (users.length === 0) {
-                switchAuthTab('REGISTER');
-            } else {
-                switchAuthTab('LOGIN');
-            }
+            switchAuthTab('LOGIN');
         }
 
         function showAuthPortal() {
@@ -920,7 +1056,7 @@
             document.getElementById('adminSettingsModal').classList.add('hidden');
         }
 
-        function saveAdminCredentials(e) {
+        async function saveAdminCredentials(e) {
             e.preventDefault();
             if (!currentUser) return;
 
@@ -928,28 +1064,18 @@
             const newPass = document.getElementById('newAdminPass').value;
             if (!newBiz || !newPass) return;
 
-            const users = getRegisteredUsers();
-            const idx = users.findIndex(u => u.username === currentUser.username);
-            if (idx !== -1) {
-                users[idx].businessName = newBiz;
-                users[idx].password = newPass;
-                saveRegisteredUsers(users);
-                currentUser = users[idx];
-            }
+            currentUser = upsertLocalUserRecord(currentUser.username, newPass, newBiz);
 
             document.getElementById('activeBusinessTitle').textContent = currentUser.businessName;
             document.getElementById('printReportTitle').textContent = `Laporan Pembukuan Kas — ${currentUser.businessName}`;
             closeAdminSettingsModal();
+            saveData(true);
             showToast('Profil usaha & password berhasil diperbarui');
         }
 
         // =========================================================================
-        // LOAD, SAVE & HYBRID CLOUD PER PENGGUNA (TANPA DATA CONTOH)
+        // LOAD, SAVE & AUTO-SYNC KE GOOGLE SHEETS CLOUD
         // =========================================================================
-        function isGoogleAppsScriptEnv() {
-            return typeof google !== 'undefined' && google.script && google.script.run;
-        }
-
         function getUserInitBalKey() {
             return `BUKUKASKU_INIT_BAL_${currentUser ? currentUser.username : 'guest'}`;
         }
@@ -979,26 +1105,6 @@
             }
 
             document.getElementById('initialBalanceInput').value = initialBookBalance;
-
-            // Jika berjalan di dalam Google Apps Script, otomatis cek data Cloud
-            if (isGoogleAppsScriptEnv()) {
-                document.getElementById('syncStatusFooter').innerHTML = `<i class="ph-fill ph-cloud-check text-emerald-500"></i><span>Terhubung dengan Google Apps Script (GAS)</span>`;
-                google.script.run.withSuccessHandler(function(cloudJson) {
-                    if (cloudJson) {
-                        try {
-                            const parsed = JSON.parse(cloudJson);
-                            const userCloud = parsed[currentUser.username];
-                            if (userCloud && Array.isArray(userCloud.entries)) {
-                                rawEntries = userCloud.entries;
-                                initialBookBalance = Number(userCloud.initialBalance) || 0;
-                                document.getElementById('initialBalanceInput').value = initialBookBalance;
-                                populateMonthFilter();
-                                applyFilters();
-                            }
-                        } catch (err) {}
-                    }
-                }).ambilDariSheet();
-            }
         }
 
         function saveData(syncCloud = true) {
@@ -1007,32 +1113,16 @@
                 localStorage.setItem(getUserInitBalKey(), String(initialBookBalance));
                 localStorage.setItem(getUserEntriesKey(), JSON.stringify(rawEntries));
             } catch (e) {
-                console.error('Gagal menyimpan data:', e);
+                console.error('Gagal menyimpan data lokal:', e);
             }
 
-            if (syncCloud && isGoogleAppsScriptEnv()) {
-                const payload = JSON.stringify({
-                    [currentUser.username]: {
-                        businessName: currentUser.businessName,
-                        initialBalance: initialBookBalance,
-                        entries: rawEntries,
-                        updatedAt: new Date().toISOString()
-                    }
-                });
-                google.script.run.simpanKeSheet(payload);
+            if (syncCloud) {
+                syncToGoogleSheet(false);
             }
         }
 
         function openCloudModal() {
-            const isGas = isGoogleAppsScriptEnv();
-            document.getElementById('gasEnvironmentStatus').textContent = isGas
-                ? 'Terdeteksi berjalan di dalam Server Google Apps Script'
-                : 'Berjalan di Browser Lokal / GitHub Pages (Gunakan JSON untuk pindah data)';
-            const badge = document.getElementById('gasBadge');
-            if (isGas) {
-                badge.textContent = 'GAS Cloud Aktif';
-                badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700';
-            }
+            document.getElementById('gasEnvironmentStatus').textContent = 'Terhubung langsung ke API Google Sheets Cloud';
             document.getElementById('cloudModal').classList.remove('hidden');
         }
 
@@ -1040,57 +1130,103 @@
             document.getElementById('cloudModal').classList.add('hidden');
         }
 
-        function syncToGoogleSheet() {
-            if (!isGoogleAppsScriptEnv()) {
-                showToast('Fitur ini aktif saat file dipasang di Google Apps Script');
-                return;
+        async function syncToGoogleSheet(showNotification = true) {
+            if (!currentUser) return;
+            setCloudStatusIndicator('SYNCING', 'Menyimpan ke Cloud...');
+
+            const btnPush = document.getElementById('btnManualPushCloud');
+            if (btnPush) btnPush.disabled = true;
+
+            try {
+                const res = await callGasApi({
+                    action: 'save',
+                    username: currentUser.username,
+                    password: currentUser.password,
+                    businessName: currentUser.businessName,
+                    data: {
+                        openingBalance: initialBookBalance,
+                        initialBalance: initialBookBalance,
+                        transactions: rawEntries,
+                        entries: rawEntries,
+                        updatedAt: new Date().toISOString()
+                    }
+                });
+
+                if (res && res.status === 'success') {
+                    setCloudStatusIndicator('SUCCESS', 'Cloud Tersinkronisasi');
+                    if (showNotification) {
+                        showToast('Data berhasil disimpan ke Google Sheets Cloud!');
+                        closeCloudModal();
+                    }
+                } else {
+                    setCloudStatusIndicator('OFFLINE', 'Tersimpan Lokal');
+                    if (showNotification) {
+                        showToast((res && res.message) ? res.message : 'Tersimpan di browser');
+                    }
+                }
+            } catch (err) {
+                setCloudStatusIndicator('OFFLINE', 'Tersimpan Lokal');
+                if (showNotification) {
+                    showToast('Gagal menghubungi Google Sheets, data aman di memori lokal.');
+                }
+            } finally {
+                if (btnPush) btnPush.disabled = false;
             }
-            const payload = JSON.stringify({
-                initialBalance: initialBookBalance,
-                entries: rawEntries,
-                updatedAt: new Date().toISOString()
-            });
-            google.script.run
-                .withSuccessHandler(function() {
-                    showToast('Berhasil disimpan ke Google Sheets!');
-                    closeCloudModal();
-                })
-                .simpanKeSheet(payload);
         }
 
-        function loadFromGoogleSheet() {
-            if (!isGoogleAppsScriptEnv()) {
-                showToast('Fitur ini aktif saat file dipasang di Google Apps Script');
-                return;
+        async function loadFromGoogleSheet(showNotification = true) {
+            if (!currentUser) return;
+            setCloudStatusIndicator('SYNCING', 'Mengambil Cloud...');
+
+            const btnPull = document.getElementById('btnManualPullCloud');
+            if (btnPull) btnPull.disabled = true;
+
+            try {
+                const res = await callGasApi({
+                    action: 'login',
+                    username: currentUser.username,
+                    password: currentUser.password
+                });
+
+                if (res && res.status === 'success' && res.data) {
+                    const cloudData = res.data;
+                    const cloudInitBal = Number(cloudData.openingBalance !== undefined ? cloudData.openingBalance : cloudData.initialBalance) || 0;
+                    const cloudEntries = Array.isArray(cloudData.transactions)
+                        ? cloudData.transactions
+                        : (Array.isArray(cloudData.entries) ? cloudData.entries : []);
+
+                    initialBookBalance = cloudInitBal;
+                    rawEntries = cloudEntries;
+                    document.getElementById('initialBalanceInput').value = initialBookBalance;
+
+                    saveData(false);
+                    populateMonthFilter();
+                    applyFilters();
+                    setCloudStatusIndicator('SUCCESS', 'Cloud Tersinkronisasi');
+
+                    if (showNotification) {
+                        closeCloudModal();
+                        showToast('Data terbaru berhasil ditarik dari Google Sheets!');
+                    }
+                } else if (showNotification) {
+                    setCloudStatusIndicator('OFFLINE', 'Tersimpan Lokal');
+                    showToast((res && res.message) ? res.message : 'Belum ada data di Google Sheet');
+                }
+            } catch (err) {
+                setCloudStatusIndicator('OFFLINE', 'Tersimpan Lokal');
+                if (showNotification) {
+                    showToast('Tidak dapat menarik data dari Cloud saat ini');
+                }
+            } finally {
+                if (btnPull) btnPull.disabled = false;
             }
-            google.script.run
-                .withSuccessHandler(function(cloudJson) {
-                    if (!cloudJson) {
-                        showToast('Data di Google Sheet masih kosong');
-                        return;
-                    }
-                    try {
-                        const parsed = JSON.parse(cloudJson);
-                        if (Array.isArray(parsed.entries)) {
-                            rawEntries = parsed.entries;
-                            initialBookBalance = Number(parsed.initialBalance) || 0;
-                            document.getElementById('initialBalanceInput').value = initialBookBalance;
-                            saveData(false);
-                            populateMonthFilter();
-                            applyFilters();
-                            closeCloudModal();
-                            showToast('Data berhasil dimuat dari Google Sheets!');
-                        }
-                    } catch (e) {
-                        showToast('Format data di Sheet tidak valid');
-                    }
-                })
-                .ambilDariSheet();
         }
 
         function downloadBackupJSON() {
             const payload = {
                 app: 'BukuKasKu Pro',
+                username: currentUser ? currentUser.username : '',
+                businessName: currentUser ? currentUser.businessName : '',
                 initialBalance: initialBookBalance,
                 entries: rawEntries,
                 exportedAt: new Date().toISOString()
@@ -1114,17 +1250,19 @@
             reader.onload = function(e) {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if (Array.isArray(data.entries)) {
-                        rawEntries = data.entries;
-                        if (data.initialBalance !== undefined) {
-                            initialBookBalance = Number(data.initialBalance) || 0;
+                    const entriesArr = Array.isArray(data.entries) ? data.entries : (Array.isArray(data.transactions) ? data.transactions : null);
+                    if (entriesArr) {
+                        rawEntries = entriesArr;
+                        const initBal = data.initialBalance !== undefined ? data.initialBalance : data.openingBalance;
+                        if (initBal !== undefined) {
+                            initialBookBalance = Number(initBal) || 0;
                             document.getElementById('initialBalanceInput').value = initialBookBalance;
                         }
-                        saveData();
+                        saveData(true);
                         populateMonthFilter();
                         applyFilters();
                         closeCloudModal();
-                        showToast('Data berhasil dipulihkan dari file JSON!');
+                        showToast('Data dipulihkan & disinkronkan ke Google Sheets!');
                     } else {
                         showToast('File JSON tidak sesuai format BukuKasKu');
                     }
@@ -1138,11 +1276,197 @@
         function updateInitialBalance(val, notify = false) {
             initialBookBalance = Number(val) || 0;
             document.getElementById('initialBalanceInput').value = initialBookBalance;
-            saveData();
+            saveData(true);
             applyFilters();
             if (notify) {
-                showToast('Saldo Awal Pembukuan diperbarui & seluruh saldo dihitung ulang');
+                showToast('Saldo Awal diperbarui & disimpan ke Cloud');
             }
+        }
+
+        // =========================================================================
+        // MODAL FORM TRANSAKSI & KALKULATOR RINCIAN SUB-ITEM
+        // =========================================================================
+        function openTransactionModal(editId = null) {
+            const form = document.getElementById('transactionForm');
+            form.reset();
+            document.getElementById('subItemsContainer').innerHTML = '';
+
+            if (editId) {
+                const entry = rawEntries.find(e => e.id === editId);
+                if (!entry) return;
+                document.getElementById('modalTitle').textContent = 'Edit Catatan Keuangan';
+                document.getElementById('entryId').value = entry.id;
+                document.getElementById('entryDate').value = entry.date;
+                document.getElementById('entryTitle').value = entry.title;
+                document.getElementById('entrySaldoMasuk').value = entry.saldoMasuk || 0;
+                document.getElementById('entrySaldoKeluar').value = entry.saldoKeluar || 0;
+                document.getElementById('entryNotes').value = entry.notes || '';
+
+                if (Array.isArray(entry.items) && entry.items.length > 0) {
+                    entry.items.forEach(item => addSubItemRow(item.type, item.name, item.qty, item.price));
+                }
+            } else {
+                document.getElementById('modalTitle').textContent = 'Tambah Catatan Keuangan Baru';
+                document.getElementById('entryId').value = '';
+                document.getElementById('entryDate').value = new Date().toISOString().slice(0, 10);
+                document.getElementById('entrySaldoMasuk').value = 0;
+                document.getElementById('entrySaldoKeluar').value = 0;
+            }
+
+            updateLiveNetPreview();
+            document.getElementById('transactionModal').classList.remove('hidden');
+        }
+
+        function closeTransactionModal() {
+            document.getElementById('transactionModal').classList.add('hidden');
+        }
+
+        function editEntry(id) {
+            openTransactionModal(id);
+        }
+
+        function addSubItemRow(defaultType = 'MASUK', name = '', qty = 1, price = '') {
+            const container = document.getElementById('subItemsContainer');
+            const row = document.createElement('div');
+            row.className = 'sub-item-row grid grid-cols-1 sm:grid-cols-12 gap-2 items-center bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs';
+            row.innerHTML = `
+                <div class="sm:col-span-3">
+                    <select onchange="recalcFromSubItems()" class="sub-type w-full px-2.5 py-1.5 text-xs font-bold rounded-lg border border-slate-300 bg-slate-50 outline-none">
+                        <option value="MASUK" ${defaultType === 'MASUK' ? 'selected' : ''}>+ Saldo Masuk</option>
+                        <option value="KELUAR" ${defaultType === 'KELUAR' ? 'selected' : ''}>- Saldo Keluar</option>
+                    </select>
+                </div>
+                <div class="sm:col-span-4">
+                    <input type="text" placeholder="Nama barang / rincian..." value="${escapeHtml(name)}" class="sub-name w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg outline-none focus:border-brand-500">
+                </div>
+                <div class="sm:col-span-2">
+                    <input type="number" min="1" value="${qty}" oninput="recalcFromSubItems()" placeholder="Qty" class="sub-qty w-full px-2.5 py-1.5 text-xs text-center border border-slate-300 rounded-lg outline-none focus:border-brand-500">
+                </div>
+                <div class="sm:col-span-2">
+                    <input type="number" min="0" value="${price}" oninput="recalcFromSubItems()" placeholder="Harga (Rp)" class="sub-price w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg outline-none focus:border-brand-500">
+                </div>
+                <div class="sm:col-span-1 text-right">
+                    <button type="button" onclick="this.closest('.sub-item-row').remove(); recalcFromSubItems();" class="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors" title="Hapus rincian">
+                        <i class="ph-bold ph-trash text-sm"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(row);
+            recalcFromSubItems();
+        }
+
+        function recalcFromSubItems() {
+            const rows = document.querySelectorAll('#subItemsContainer .sub-item-row');
+            if (rows.length === 0) {
+                updateLiveNetPreview();
+                return;
+            }
+
+            let sumMasuk = 0;
+            let sumKeluar = 0;
+
+            rows.forEach(r => {
+                const type = r.querySelector('.sub-type').value;
+                const qty = Number(r.querySelector('.sub-qty').value) || 0;
+                const price = Number(r.querySelector('.sub-price').value) || 0;
+                const sub = qty * price;
+                if (type === 'MASUK') sumMasuk += sub;
+                else sumKeluar += sub;
+            });
+
+            document.getElementById('entrySaldoMasuk').value = sumMasuk;
+            document.getElementById('entrySaldoKeluar').value = sumKeluar;
+            updateLiveNetPreview();
+        }
+
+        function updateLiveNetPreview() {
+            const masuk = Number(document.getElementById('entrySaldoMasuk').value) || 0;
+            const keluar = Number(document.getElementById('entrySaldoKeluar').value) || 0;
+            const net = masuk - keluar;
+
+            const previewEl = document.getElementById('liveNetPreview');
+            const statusEl = document.getElementById('liveNetStatus');
+
+            previewEl.textContent = formatLabaMinus(net);
+            if (net > 0) {
+                previewEl.className = 'text-base font-bold text-emerald-600 mt-0.5';
+                statusEl.textContent = 'Surplus / Laba (+)';
+                statusEl.className = 'text-[10px] font-semibold text-emerald-600';
+            } else if (net < 0) {
+                previewEl.className = 'text-base font-bold text-rose-600 mt-0.5';
+                statusEl.textContent = 'Defisit / Minus (-)';
+                statusEl.className = 'text-[10px] font-semibold text-rose-600';
+            } else {
+                previewEl.className = 'text-base font-bold text-slate-800 mt-0.5';
+                statusEl.textContent = 'Seimbang (Rp 0)';
+                statusEl.className = 'text-[10px] text-slate-500';
+            }
+        }
+
+        function saveTransaction(e) {
+            e.preventDefault();
+            const id = document.getElementById('entryId').value;
+            const date = document.getElementById('entryDate').value;
+            const title = document.getElementById('entryTitle').value.trim();
+            const saldoMasuk = Number(document.getElementById('entrySaldoMasuk').value) || 0;
+            const saldoKeluar = Number(document.getElementById('entrySaldoKeluar').value) || 0;
+            const notes = document.getElementById('entryNotes').value.trim();
+
+            if (!date || !title) {
+                showToast('Tanggal dan keterangan wajib diisi');
+                return;
+            }
+
+            const items = [];
+            document.querySelectorAll('#subItemsContainer .sub-item-row').forEach(r => {
+                const type = r.querySelector('.sub-type').value;
+                const name = r.querySelector('.sub-name').value.trim();
+                const qty = Number(r.querySelector('.sub-qty').value) || 1;
+                const price = Number(r.querySelector('.sub-price').value) || 0;
+                if (name || price > 0) {
+                    items.push({
+                        type,
+                        name: name || (type === 'MASUK' ? 'Item Pemasukan' : 'Item Pengeluaran'),
+                        qty,
+                        price
+                    });
+                }
+            });
+
+            if (id) {
+                const idx = rawEntries.findIndex(item => item.id === id);
+                if (idx !== -1) {
+                    rawEntries[idx] = {
+                        ...rawEntries[idx],
+                        date,
+                        title,
+                        saldoMasuk,
+                        saldoKeluar,
+                        notes,
+                        items
+                    };
+                }
+            } else {
+                const newEntry = {
+                    id: 'TRX-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6),
+                    date,
+                    title,
+                    saldoMasuk,
+                    saldoKeluar,
+                    notes,
+                    items
+                };
+                rawEntries.push(newEntry);
+                if (items.length > 0) {
+                    expandedIds.add(newEntry.id);
+                }
+            }
+
+            saveData(true);
+            populateMonthFilter();
+            applyFilters();
+            closeTransactionModal();
+            showToast(id ? 'Catatan diperbarui & disimpan ke Cloud' : 'Catatan baru ditambahkan & disimpan ke Cloud');
         }
 
         // =========================================================================
