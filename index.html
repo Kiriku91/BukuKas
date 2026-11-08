@@ -76,276 +76,134 @@
 <body class="text-slate-800 antialiased min-h-screen flex flex-col">
 
     <!-- =====================================================================
-         BAGIAN 1: LANDING PAGE PUBLIK (Tampil Sebelum Login)
+         BAGIAN 1: PORTAL LOGIN & PENDAFTARAN BERSIH (Tampil Sebelum Login)
     ====================================================================== -->
-    <div id="landingView" class="min-h-screen flex flex-col bg-slate-50">
+    <div id="authPortalView" class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 p-4">
         
-        <!-- Navbar Landing Page -->
-        <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
-                <a href="#" class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white shadow-md shadow-brand-500/30">
-                        <i class="ph-bold ph-notebook text-2xl"></i>
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <span class="font-extrabold text-lg text-slate-900 tracking-tight">BukuKasKu</span>
-                            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-brand-100 text-brand-700">PRO</span>
-                        </div>
-                        <p class="text-[11px] text-slate-500 hidden sm:block">Sistem Pembukuan Berjalan & Rincian Sub-Item</p>
-                    </div>
-                </a>
+        <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-200/80 overflow-hidden">
+            <!-- Header Portal -->
+            <div class="p-6 sm:p-7 bg-slate-900 text-white text-center space-y-2">
+                <div class="w-12 h-12 rounded-2xl bg-brand-600 flex items-center justify-center text-white mx-auto shadow-lg shadow-brand-500/30">
+                    <i class="ph-bold ph-notebook text-2xl"></i>
+                </div>
+                <div class="flex items-center justify-center gap-1.5 pt-1">
+                    <h1 class="font-extrabold text-xl tracking-tight text-white">BukuKasKu</h1>
+                    <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">PRO</span>
+                </div>
+                <p class="text-xs text-slate-400">Sistem Pembukuan Kas & Rincian Keuangan</p>
+            </div>
 
-                <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-slate-600">
-                    <a href="#fitur" class="hover:text-brand-600 transition-colors">Fitur Utama</a>
-                    <a href="#struktur" class="hover:text-brand-600 transition-colors">Struktur Tabel</a>
-                    <a href="#cloud" class="hover:text-brand-600 transition-colors">Panduan GitHub & GAS</a>
-                </nav>
+            <!-- Tab Navigasi: Masuk vs Daftar Akun Baru -->
+            <div class="grid grid-cols-2 bg-slate-100 p-1.5 m-5 mb-0 rounded-2xl border border-slate-200/80 text-xs font-bold">
+                <button type="button" id="tabBtnLogin" onclick="switchAuthTab('LOGIN')" class="py-2.5 rounded-xl bg-white text-slate-900 shadow-xs transition-all flex items-center justify-center gap-1.5">
+                    <i class="ph-bold ph-sign-in text-sm text-brand-600"></i>
+                    <span>Masuk (Login)</span>
+                </button>
+                <button type="button" id="tabBtnRegister" onclick="switchAuthTab('REGISTER')" class="py-2.5 rounded-xl text-slate-500 hover:text-slate-800 transition-all flex items-center justify-center gap-1.5">
+                    <i class="ph-bold ph-user-plus text-sm"></i>
+                    <span>Daftar Akun</span>
+                </button>
+            </div>
 
-                <div class="flex items-center gap-2.5">
-                    <button onclick="openLoginModal()" class="inline-flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-semibold text-white bg-slate-900 hover:bg-brand-600 rounded-xl transition-all shadow-sm">
-                        <i class="ph-bold ph-lock-key-open text-base"></i>
-                        <span>Login Admin</span>
-                    </button>
+            <!-- Notifikasi Alert Error / Sukses -->
+            <div class="px-6 pt-4">
+                <div id="authAlertBox" class="hidden p-3 rounded-xl text-xs font-medium flex items-center gap-2">
+                    <i id="authAlertIcon" class="ph-fill ph-warning-circle text-base shrink-0"></i>
+                    <span id="authAlertText">Pesan notifikasi</span>
                 </div>
             </div>
-        </header>
 
-        <!-- Hero Section -->
-        <section class="relative overflow-hidden py-12 sm:py-20 bg-gradient-to-b from-white via-emerald-50/40 to-slate-50 border-b border-slate-200/70">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-                <!-- Kiri: Headline & CTA -->
-                <div class="lg:col-span-7 space-y-6">
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-100/80 border border-emerald-200 text-emerald-800 text-xs font-semibold">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span>Siap Pakai di Lokal, GitHub Pages & Google Apps Script (GAS)</span>
+            <!-- FORM 1: LOGIN PENGGUNA -->
+            <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="p-6 pt-4 space-y-4">
+                <div>
+                    <label for="loginUsername" class="block text-xs font-bold text-slate-700 mb-1">Username</label>
+                    <div class="relative">
+                        <i class="ph ph-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
+                        <input type="text" id="loginUsername" required autocomplete="username" placeholder="Masukkan username Anda..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
                     </div>
+                </div>
 
-                    <h1 class="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
-                        Kelola Catatan Kas, <span class="text-brand-600">Laba/Minus</span> & Rincian Saldo Secara Otomatis.
-                    </h1>
-
-                    <p class="text-slate-600 text-sm sm:text-base leading-relaxed max-w-2xl">
-                        Aplikasi pembukuan kas harian dengan sistem <b>Running Balance (Saldo Berjalan)</b>. Setiap transaksi otomatis menghitung <b>Saldo Awal</b> dari baris sebelumnya, menjumlahkan rincian sub-item <b>Saldo Masuk</b> & <b>Saldo Keluar</b>, hingga menampilkan status <b>Laba/Minus</b> dan <b>Total Saldo</b> secara instan.
-                    </p>
-
-                    <div class="flex flex-wrap items-center gap-3 pt-2">
-                        <button onclick="openLoginModal()" class="inline-flex items-center gap-2.5 px-6 py-3.5 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-2xl shadow-lg shadow-brand-500/25 transition-all">
-                            <i class="ph-bold ph-sign-in text-lg"></i>
-                            <span>Masuk ke Dashboard Admin</span>
-                        </button>
-                        <a href="#struktur" class="inline-flex items-center gap-2 px-5 py-3.5 text-sm font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-300 rounded-2xl transition-colors">
-                            <i class="ph-bold ph-table text-lg text-brand-600"></i>
-                            <span>Lihat Struktur Kolom</span>
-                        </a>
-                    </div>
-
-                    <!-- Info Kredensial Demo Cepat -->
-                    <div class="bg-white/90 border border-slate-200 rounded-2xl p-4 max-w-xl shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center shrink-0">
-                                <i class="ph-duotone ph-key text-xl"></i>
-                            </div>
-                            <div class="text-xs">
-                                <span class="font-bold text-slate-800 block">Akun Demo Default Admin:</span>
-                                <span class="text-slate-500">Username: <code class="font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded">admin</code> &bull; Password: <code class="font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded">admin123</code></span>
-                            </div>
-                        </div>
-                        <button onclick="quickDemoLogin()" class="px-3.5 py-2 text-xs font-bold text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-xl border border-brand-200 transition-colors shrink-0">
-                            Langsung Masuk &rarr;
+                <div>
+                    <label for="loginPassword" class="block text-xs font-bold text-slate-700 mb-1">Password</label>
+                    <div class="relative">
+                        <i class="ph ph-lock-key absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
+                        <input type="password" id="loginPassword" required autocomplete="current-password" placeholder="Masukkan password..." class="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                        <button type="button" onclick="togglePasswordVisibility('loginPassword', 'eyeLoginIcon')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                            <i id="eyeLoginIcon" class="ph ph-eye text-base"></i>
                         </button>
                     </div>
                 </div>
 
-                <!-- Kanan: Interactive Preview Card -->
-                <div class="lg:col-span-5">
-                    <div class="bg-slate-900 rounded-3xl p-5 sm:p-6 text-white shadow-2xl border border-slate-800 space-y-5">
-                        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
-                            <div class="flex items-center gap-2.5">
-                                <div class="w-3 h-3 rounded-full bg-rose-500"></div>
-                                <div class="w-3 h-3 rounded-full bg-amber-400"></div>
-                                <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
-                                <span class="text-xs text-slate-400 font-medium ml-2">Simulasi Baris Buku Kas</span>
-                            </div>
-                            <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Otomatis</span>
-                        </div>
-
-                        <!-- Contoh Kalkulasi Berjalan -->
-                        <div class="space-y-3 text-xs">
-                            <div class="bg-slate-800/80 rounded-2xl p-3.5 border border-slate-700/80 flex items-center justify-between">
-                                <div>
-                                    <span class="text-slate-400 block text-[11px]">1. Saldo Awal (Dari Total Saldo Kemarin)</span>
-                                    <span class="font-bold text-sm text-white">Rp 5.000.000</span>
-                                </div>
-                                <i class="ph-duotone ph-flag-banner text-2xl text-slate-400"></i>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-3">
-                                <div class="bg-emerald-950/60 border border-emerald-700/50 rounded-2xl p-3.5">
-                                    <span class="text-emerald-300 block text-[11px]">2. Saldo Masuk (+)</span>
-                                    <span class="font-bold text-sm text-emerald-400">+ Rp 8.500.000</span>
-                                    <span class="text-[10px] text-emerald-400/70 block mt-0.5">2 Rincian Pemasukan</span>
-                                </div>
-                                <div class="bg-rose-950/60 border border-rose-700/50 rounded-2xl p-3.5">
-                                    <span class="text-rose-300 block text-[11px]">3. Saldo Keluar (-)</span>
-                                    <span class="font-bold text-sm text-rose-400">- Rp 1.250.000</span>
-                                    <span class="text-[10px] text-rose-400/70 block mt-0.5">2 Rincian Pengeluaran</span>
-                                </div>
-                            </div>
-
-                            <div class="bg-slate-800/80 rounded-2xl p-3.5 border border-slate-700/80 flex items-center justify-between">
-                                <div>
-                                    <span class="text-slate-400 block text-[11px]">4. Laba / Minus (Masuk - Keluar)</span>
-                                    <span class="font-bold text-sm text-emerald-400">+ Rp 7.250.000</span>
-                                </div>
-                                <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300">STATUS: LABA</span>
-                            </div>
-
-                            <div class="bg-gradient-to-r from-brand-600 to-emerald-600 rounded-2xl p-4 flex items-center justify-between shadow-lg">
-                                <div>
-                                    <span class="text-emerald-100 block text-[11px] font-medium">5. Total Saldo Akhir (Saldo Awal + Laba/Minus)</span>
-                                    <span class="font-extrabold text-lg text-white">Rp 12.250.000</span>
-                                </div>
-                                <i class="ph-bold ph-check-circle text-2xl text-white"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section Fitur Utama -->
-        <section id="fitur" class="py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-            <div class="text-center max-w-2xl mx-auto space-y-2">
-                <span class="text-xs font-bold uppercase tracking-widest text-brand-600">Keunggulan Sistem</span>
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Dirancang Khusus untuk Pembukuan Rinci</h2>
-                <p class="text-xs sm:text-sm text-slate-500">Tidak perlu lagi menghitung rumus manual di kertas atau khawatir urutan saldo berantakan saat mengedit transaksi.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs space-y-3">
-                    <div class="w-11 h-11 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center">
-                        <i class="ph-duotone ph-arrows-clockwise text-2xl"></i>
-                    </div>
-                    <h3 class="font-bold text-base text-slate-900">Saldo Awal Berantai Otomatis</h3>
-                    <p class="text-xs text-slate-600 leading-relaxed">
-                        Setiap baris otomatis mengambil <b>Total Saldo</b> dari transaksi sebelumnya sebagai <b>Saldo Awal</b>. Jika Anda mengedit atau menyisipkan tanggal lama, seluruh urutan dihitung ulang otomatis.
-                    </p>
+                <div class="flex items-center justify-between text-xs pt-1">
+                    <label class="inline-flex items-center gap-2 text-slate-600 cursor-pointer">
+                        <input type="checkbox" id="rememberSession" checked class="rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+                        <span>Ingat sesi masuk saya</span>
+                    </label>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs space-y-3">
-                    <div class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-                        <i class="ph-duotone ph-list-checks text-2xl"></i>
+                <button type="submit" class="w-full py-3 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2">
+                    <i class="ph-bold ph-sign-in text-base"></i>
+                    <span>Masuk ke Pembukuan</span>
+                </button>
+
+                <p class="text-center text-xs text-slate-500 pt-2">
+                    Belum punya akun? 
+                    <button type="button" onclick="switchAuthTab('REGISTER')" class="font-bold text-brand-600 hover:underline">Daftar akun baru di sini</button>
+                </p>
+            </form>
+
+            <!-- FORM 2: PENDAFTARAN AKUN BARU (REGISTER) -->
+            <form id="registerForm" onsubmit="handleRegisterSubmit(event)" class="hidden p-6 pt-4 space-y-4">
+                <div>
+                    <label for="regBusinessName" class="block text-xs font-bold text-slate-700 mb-1">Nama Usaha / Nama Lengkap <span class="text-rose-500">*</span></label>
+                    <div class="relative">
+                        <i class="ph ph-storefront absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
+                        <input type="text" id="regBusinessName" required placeholder="Cth: Toko Berkah Jaya / Budi Santoso" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
                     </div>
-                    <h3 class="font-bold text-base text-slate-900">Kalkulator Rincian Sub-Item</h3>
-                    <p class="text-xs text-slate-600 leading-relaxed">
-                        Satu tanggal punya banyak nota? Tambahkan sub-item <b>+ Saldo Masuk</b> maupun <b>- Saldo Keluar</b> beserta Qty dan harga satuan. Totalnya langsung terakumulasi.
-                    </p>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs space-y-3">
-                    <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-                        <i class="ph-duotone ph-shield-check text-2xl"></i>
+                <div>
+                    <label for="regUsername" class="block text-xs font-bold text-slate-700 mb-1">Username Baru <span class="text-rose-500">*</span></label>
+                    <div class="relative">
+                        <i class="ph ph-user-circle absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
+                        <input type="text" id="regUsername" required minlength="3" placeholder="Buat username tanpa spasi..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
                     </div>
-                    <h3 class="font-bold text-base text-slate-900">Proteksi Admin & Siap Cloud</h3>
-                    <p class="text-xs text-slate-600 leading-relaxed">
-                        Dilengkapi halaman login Admin dengan password yang bisa Anda ganti kapan saja, fitur Backup/Restore JSON, Ekspor CSV Excel, dan sinkronisasi Google Apps Script.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section Struktur Kolom -->
-        <section id="struktur" class="py-12 bg-white border-y border-slate-200/80">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-                <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
-                    <div>
-                        <span class="text-xs font-bold uppercase tracking-widest text-brand-600">Struktur Tabel Standar</span>
-                        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">Format 7 Kolom Inti Pembukuan Kas</h2>
-                    </div>
-                    <button onclick="openLoginModal()" class="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-xl">
-                        <span>Buka Tabel Interaktif Sekarang</span>
-                        <i class="ph-bold ph-arrow-right"></i>
-                    </button>
                 </div>
 
-                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 text-xs">
-                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-                        <span class="font-bold text-slate-900 block">1. Tanggal</span>
-                        <span class="text-slate-500 text-[11px]">Urutan kronologis & nomor baris</span>
-                    </div>
-                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-                        <span class="font-bold text-slate-900 block">2. Keterangan</span>
-                        <span class="text-slate-500 text-[11px]">Judul & tombol buka tabel rincian item</span>
-                    </div>
-                    <div class="p-3.5 rounded-xl bg-slate-100/80 border border-slate-300">
-                        <span class="font-bold text-slate-900 block">3. Saldo Awal</span>
-                        <span class="text-slate-600 text-[11px]">Saldo sebelum transaksi baris tersebut</span>
-                    </div>
-                    <div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200">
-                        <span class="font-bold text-emerald-800 block">4. Saldo Masuk</span>
-                        <span class="text-emerald-600 text-[11px]">Total uang masuk (+) pada baris itu</span>
-                    </div>
-                    <div class="p-3.5 rounded-xl bg-rose-50 border border-rose-200">
-                        <span class="font-bold text-rose-800 block">5. Saldo Keluar</span>
-                        <span class="text-rose-600 text-[11px]">Total uang keluar (-) pada baris itu</span>
-                    </div>
-                    <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200">
-                        <span class="font-bold text-amber-900 block">6. Laba / Minus</span>
-                        <span class="text-amber-700 text-[11px]">Selisih Masuk dikurangi Keluar</span>
-                    </div>
-                    <div class="p-3.5 rounded-xl bg-slate-900 text-white col-span-2 sm:col-span-1">
-                        <span class="font-bold text-emerald-300 block">7. Total Saldo</span>
-                        <span class="text-slate-300 text-[11px]">Saldo Awal + Laba/Minus</span>
+                <div>
+                    <label for="regPassword" class="block text-xs font-bold text-slate-700 mb-1">Password <span class="text-rose-500">*</span></label>
+                    <div class="relative">
+                        <i class="ph ph-lock-key absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
+                        <input type="password" id="regPassword" required minlength="4" placeholder="Minimal 4 karakter..." class="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                        <button type="button" onclick="togglePasswordVisibility('regPassword', 'eyeRegIcon')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                            <i id="eyeRegIcon" class="ph ph-eye text-base"></i>
+                        </button>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- Section Panduan Deploy Server (GitHub & GAS) -->
-        <section id="cloud" class="py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                <div class="space-y-3">
-                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Siap Online Gratis</span>
-                    <h3 class="text-xl sm:text-2xl font-bold">Bisa Dipasang di GitHub Pages maupun Google Apps Script (GAS)</h3>
-                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                        File ini sudah dilengkapi jembatan otomatis (<code class="text-emerald-300">google.script.run</code>). Jika Anda menaruhnya di <b>GitHub Pages</b>, data tersimpan aman di browser. Jika Anda memasangnya di <b>Google Apps Script</b>, Anda bisa menekan tombol <b>Sinkron Cloud</b> di dashboard untuk menyimpan & mengambil data langsung dari Google Sheets!
-                    </p>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                    <div class="bg-slate-800/90 p-4 rounded-2xl border border-slate-700 space-y-2">
-                        <div class="flex items-center gap-2 font-bold text-white text-sm">
-                            <i class="ph-bold ph-github-logo text-lg text-emerald-400"></i>
-                            <span>GitHub Pages</span>
-                        </div>
-                        <p class="text-slate-400">Cukup ganti nama file menjadi <code class="text-white">index.html</code>, upload ke repository GitHub, dan aktifkan menu Pages.</p>
-                    </div>
-                    <div class="bg-slate-800/90 p-4 rounded-2xl border border-slate-700 space-y-2">
-                        <div class="flex items-center gap-2 font-bold text-white text-sm">
-                            <i class="ph-bold ph-google-drive-logo text-lg text-emerald-400"></i>
-                            <span>Google Apps Script</span>
-                        </div>
-                        <p class="text-slate-400">Tempel kode ini sebagai <code class="text-white">Index.html</code> di Apps Script Google Sheets Anda untuk database cloud gratis.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+                <button type="submit" class="w-full py-3 text-sm font-bold text-white bg-slate-900 hover:bg-brand-600 rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                    <i class="ph-bold ph-user-plus text-base"></i>
+                    <span>Daftar & Buat Buku Kas Kosong</span>
+                </button>
 
-        <!-- Footer Landing Page -->
-        <footer class="bg-white border-t border-slate-200 mt-auto py-6">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
-                <p>&copy; 2026 <b>BukuKasKu Pro</b> — Sistem Catatan Keuangan dengan Rincian & Portal Admin.</p>
-                <button onclick="openLoginModal()" class="font-semibold text-brand-600 hover:underline">Masuk Panel Admin &rarr;</button>
-            </div>
-        </footer>
+                <p class="text-center text-xs text-slate-500 pt-2">
+                    Sudah punya akun? 
+                    <button type="button" onclick="switchAuthTab('LOGIN')" class="font-bold text-brand-600 hover:underline">Masuk di sini</button>
+                </p>
+            </form>
+        </div>
+
+        <p class="text-[11px] text-slate-400 mt-6 text-center">
+            &copy; 2026 <b>BukuKasKu Pro</b> &mdash; Data pembukuan tersimpan terpisah untuk setiap akun.
+        </p>
     </div>
 
     <!-- =====================================================================
-         BAGIAN 2: DASHBOARD ADMIN BUKU KAS (Tampil Setelah Login Berhasil)
+         BAGIAN 2: DASHBOARD BUKU KAS PENGGUNA (Tampil Setelah Login Berhasil)
     ====================================================================== -->
     <div id="adminAppView" class="hidden min-h-screen flex-col">
 
-        <!-- Navbar Dashboard Admin -->
+        <!-- Navbar Dashboard -->
         <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30 no-print">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
                 <div class="flex items-center gap-3">
@@ -354,17 +212,17 @@
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
-                            <h1 class="font-bold text-base sm:text-lg text-white leading-tight">BukuKasKu Pro</h1>
+                            <h1 class="font-bold text-base sm:text-lg text-white leading-tight" id="activeBusinessTitle">BukuKasKu Pro</h1>
                             <span class="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                                <span id="activeAdminBadge">Admin</span>
+                                <span id="activeAdminBadge">User</span>
                             </span>
                         </div>
-                        <p class="text-[11px] text-slate-400 hidden sm:block">Dashboard Pembukuan Saldo Awal, Masuk, Keluar & Laba/Minus</p>
+                        <p class="text-[11px] text-slate-400 hidden sm:block">Pembukuan Saldo Awal, Masuk, Keluar & Laba/Minus</p>
                     </div>
                 </div>
                 
-                <!-- Tombol Aksi Header Admin -->
+                <!-- Tombol Aksi Header -->
                 <div class="flex items-center gap-1.5 sm:gap-2">
                     <!-- Tombol Sinkronisasi Cloud GAS / Backup JSON -->
                     <button onclick="openCloudModal()" class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 text-xs font-medium text-emerald-300 bg-slate-800 border border-slate-700 rounded-xl hover:bg-slate-700 transition-colors" title="Sinkronisasi Cloud GAS / Backup JSON">
@@ -382,14 +240,14 @@
                         <span class="hidden md:inline">Cetak</span>
                     </button>
 
-                    <button onclick="openAdminSettingsModal()" class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 text-xs font-medium text-slate-200 bg-slate-800 border border-slate-700 rounded-xl hover:bg-slate-700 transition-colors" title="Ubah Username & Password Admin">
+                    <button onclick="openAdminSettingsModal()" class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 text-xs font-medium text-slate-200 bg-slate-800 border border-slate-700 rounded-xl hover:bg-slate-700 transition-colors" title="Pengaturan Profil & Password">
                         <i class="ph-bold ph-gear text-base text-amber-400"></i>
-                        <span class="hidden lg:inline">Password</span>
+                        <span class="hidden lg:inline">Akun</span>
                     </button>
 
-                    <button onclick="logoutAdmin()" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-xl transition-colors shadow-xs" title="Keluar ke Landing Page">
+                    <button onclick="logoutAdmin()" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-xl transition-colors shadow-xs" title="Keluar ke Halaman Login">
                         <i class="ph-bold ph-sign-out text-base"></i>
-                        <span class="hidden sm:inline">Logout</span>
+                        <span class="hidden sm:inline">Keluar</span>
                     </button>
                 </div>
             </div>
@@ -397,7 +255,7 @@
 
         <!-- Print Header (Hanya muncul saat cetak) -->
         <div class="hidden print-only p-6 border-b border-slate-300 mb-4">
-            <h1 class="text-2xl font-bold text-slate-900">Laporan Pembukuan Kas & Rincian Keuangan (BukuKasKu Pro)</h1>
+            <h1 class="text-2xl font-bold text-slate-900" id="printReportTitle">Laporan Pembukuan Kas & Rincian Keuangan</h1>
             <p class="text-xs text-slate-600 mt-1" id="printDateInfo">Dicetak pada: -</p>
         </div>
 
@@ -428,7 +286,7 @@
                     </div>
                 </div>
 
-                <!-- Filter Periode, Reset & Tombol Tambah -->
+                <!-- Filter Periode & Tombol Tambah (Tanpa Tombol Reset Contoh) -->
                 <div class="flex flex-wrap items-center gap-2.5 justify-end border-t lg:border-t-0 pt-3 lg:pt-0 border-slate-100">
                     <div class="flex items-center gap-2">
                         <span class="text-xs font-medium text-slate-500">Periode:</span>
@@ -436,10 +294,6 @@
                             <option value="ALL">Semua Tanggal</option>
                         </select>
                     </div>
-                    <button onclick="openResetModal()" class="inline-flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium text-rose-600 bg-rose-50 border border-rose-200 rounded-xl hover:bg-rose-100 transition-colors" title="Reset ke Data Contoh">
-                        <i class="ph-bold ph-arrow-counter-clockwise text-sm"></i>
-                        <span class="hidden sm:inline">Reset Contoh</span>
-                    </button>
                     <button onclick="openTransactionModal()" class="inline-flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-semibold text-white bg-brand-600 rounded-xl hover:bg-brand-700 transition-all shadow-sm shadow-brand-500/20">
                         <i class="ph-bold ph-plus-circle text-base"></i>
                         <span>Tambah Catatan Baru</span>
@@ -597,7 +451,7 @@
         <!-- Footer Dashboard -->
         <footer class="bg-white border-t border-slate-200 mt-10 py-5 no-print">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
-                <p>&copy; 2026 BukuKasKu Pro — Dashboard Admin Pembukuan Kas Berjalan.</p>
+                <p>&copy; 2026 BukuKasKu Pro — Sistem Pembukuan Kas Berjalan.</p>
                 <p class="flex items-center gap-1.5" id="syncStatusFooter">
                     <i class="ph-fill ph-check-circle text-emerald-500"></i>
                     <span>Tersimpan otomatis di LocalStorage Browser</span>
@@ -607,103 +461,35 @@
     </div>
 
     <!-- =====================================================================
-         MODAL 1: LOGIN ADMIN DENGAN PASSWORD
-    ====================================================================== -->
-    <div id="loginModal" class="fixed inset-0 z-50 hidden bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4 no-print">
-        <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden">
-            <div class="p-6 bg-slate-900 text-white flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white">
-                        <i class="ph-bold ph-shield-check text-xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-base">Portal Login Admin</h3>
-                        <p class="text-[11px] text-slate-400">Masukkan kredensial untuk mengelola Buku Kas</p>
-                    </div>
-                </div>
-                <button onclick="closeLoginModal()" class="text-slate-400 hover:text-white p-1">
-                    <i class="ph-bold ph-x text-lg"></i>
-                </button>
-            </div>
-
-            <form onsubmit="handleLoginSubmit(event)" class="p-6 space-y-4">
-                <div id="loginErrorAlert" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-center gap-2">
-                    <i class="ph-fill ph-warning-circle text-base shrink-0"></i>
-                    <span id="loginErrorText">Username atau password salah!</span>
-                </div>
-
-                <div>
-                    <label for="loginUsername" class="block text-xs font-bold text-slate-700 mb-1">Username Admin</label>
-                    <div class="relative">
-                        <i class="ph ph-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
-                        <input type="text" id="loginUsername" required placeholder="Masukkan username..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
-                    </div>
-                </div>
-
-                <div>
-                    <label for="loginPassword" class="block text-xs font-bold text-slate-700 mb-1">Password</label>
-                    <div class="relative">
-                        <i class="ph ph-lock-key absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
-                        <input type="password" id="loginPassword" required placeholder="Masukkan password..." class="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
-                        <button type="button" onclick="togglePasswordVisibility('loginPassword', 'eyeLoginIcon')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-                            <i id="eyeLoginIcon" class="ph ph-eye text-base"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-between text-xs">
-                    <label class="inline-flex items-center gap-2 text-slate-600 cursor-pointer">
-                        <input type="checkbox" id="rememberSession" checked class="rounded border-slate-300 text-brand-600 focus:ring-brand-500">
-                        <span>Ingat sesi login di perangkat ini</span>
-                    </label>
-                </div>
-
-                <!-- Box Auto-fill Demo -->
-                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
-                    <div class="text-slate-600">
-                        <span class="font-semibold text-slate-800 block">Belum diubah? Pakai Default:</span>
-                        <span>User: <code class="font-bold">admin</code> | Pass: <code class="font-bold">admin123</code></span>
-                    </div>
-                    <button type="button" onclick="fillDefaultCredentials()" class="px-2.5 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 font-bold rounded-lg border border-brand-200 transition-colors">
-                        Isi Otomatis
-                    </button>
-                </div>
-
-                <button type="submit" class="w-full py-3 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2">
-                    <i class="ph-bold ph-sign-in text-base"></i>
-                    <span>Masuk ke Buku Kas</span>
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- =====================================================================
-         MODAL 2: PENGATURAN AKUN ADMIN (UBAH USERNAME & PASSWORD)
+         MODAL PENGATURAN AKUN (UBAH NAMA USAHA & PASSWORD)
     ====================================================================== -->
     <div id="adminSettingsModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 no-print">
         <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden">
             <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
-                    <i class="ph-bold ph-key text-amber-400 text-xl"></i>
-                    <h3 class="font-bold text-base">Pengaturan Kredensial Admin</h3>
+                    <i class="ph-bold ph-user-gear text-amber-400 text-xl"></i>
+                    <h3 class="font-bold text-base">Pengaturan Profil & Password</h3>
                 </div>
                 <button onclick="closeAdminSettingsModal()" class="text-slate-400 hover:text-white p-1">
                     <i class="ph-bold ph-x text-lg"></i>
                 </button>
             </div>
             <form onsubmit="saveAdminCredentials(event)" class="p-6 space-y-4">
-                <p class="text-xs text-slate-500">Anda dapat mengganti username dan password login default sesuai keinginan Anda.</p>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Username Admin Baru</label>
-                    <input type="text" id="newAdminUser" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Username Akun (Tidak dapat diubah)</label>
+                    <input type="text" id="settingsUsernameReadonly" disabled class="w-full px-3.5 py-2 bg-slate-100 border border-slate-200 rounded-xl text-sm font-semibold text-slate-500 cursor-not-allowed">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Usaha / Nama Lengkap</label>
+                    <input type="text" id="newBusinessName" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Password Baru</label>
-                    <input type="text" id="newAdminPass" required minlength="4" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                    <input type="password" id="newAdminPass" required minlength="4" placeholder="Minimal 4 karakter" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
                 </div>
                 <div class="pt-2 flex justify-end gap-2">
                     <button type="button" onclick="closeAdminSettingsModal()" class="px-4 py-2 text-xs font-semibold text-slate-700 bg-slate-100 rounded-xl">Batal</button>
-                    <button type="submit" class="px-4 py-2 text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-xl">Simpan Password</button>
+                    <button type="submit" class="px-4 py-2 text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-xl">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
@@ -910,184 +696,204 @@
 
     <script>
         // =========================================================================
-        // KONFIGURASI DEFAULT & KUNCI PENYIMPANAN
+        // KONFIGURASI MULTI-USER & PENYIMPANAN DATA MANDIRI TANPA DATA CONTOH
         // =========================================================================
-        const DEFAULT_INITIAL_BALANCE = 5000000;
-        const STORAGE_ENTRIES_KEY = 'BUKUKASKU_ENTRIES_V2';
-        const STORAGE_INIT_BAL_KEY = 'BUKUKASKU_INITIAL_BAL_V2';
-        const STORAGE_AUTH_CRED_KEY = 'BUKUKASKU_ADMIN_CRED_V2';
-        const STORAGE_SESSION_KEY = 'BUKUKASKU_SESSION_ACTIVE_V2';
+        const STORAGE_USERS_KEY = 'BUKUKASKU_USERS_V3';
+        const STORAGE_ACTIVE_USER_KEY = 'BUKUKASKU_ACTIVE_USER_V3';
 
-        const INITIAL_ENTRIES = [
-            {
-                id: 'kas-101',
-                date: '2026-11-01',
-                title: 'Penerimaan Gaji & Belanja Kebutuhan Awal Bulan',
-                saldoMasuk: 8500000,
-                saldoKeluar: 1250000,
-                notes: 'Gaji masuk via Bank Mandiri dan langsung belanja stok dapur.',
-                items: [
-                    { type: 'MASUK', name: 'Gaji Pokok Bulanan', qty: 1, price: 7500000 },
-                    { type: 'MASUK', name: 'Tunjangan Kinerja', qty: 1, price: 1000000 },
-                    { type: 'KELUAR', name: 'Beras, Minyak & Sembako Bulanan', qty: 1, price: 750000 },
-                    { type: 'KELUAR', name: 'Token Listrik & WiFi Rumah', qty: 1, price: 500000 }
-                ]
-            },
-            {
-                id: 'kas-102',
-                date: '2026-11-02',
-                title: 'Bayar Servis Kendaraan & BBM Mingguan',
-                saldoMasuk: 0,
-                saldoKeluar: 485000,
-                notes: 'Servis berkala motor, ganti oli, dan isi Pertamax.',
-                items: [
-                    { type: 'KELUAR', name: 'Servis Berkala & Ganti Oli Mesin', qty: 1, price: 185000 },
-                    { type: 'KELUAR', name: 'Ganti Kampas Rem Depan & Belakang', qty: 1, price: 150000 },
-                    { type: 'KELUAR', name: 'Isi BBM Pertamax & Saldo E-Toll', qty: 1, price: 150000 }
-                ]
-            },
-            {
-                id: 'kas-103',
-                date: '2026-11-03',
-                title: 'Hasil Penjualan Produk UMKM & Biaya Bahan Baku',
-                saldoMasuk: 2400000,
-                saldoKeluar: 950000,
-                notes: 'Rekap pesanan katering harian 40 box dan belanja bahan segar.',
-                items: [
-                    { type: 'MASUK', name: 'Paket Nasi Box Ayam Bakar (40 Box)', qty: 40, price: 45000 },
-                    { type: 'MASUK', name: 'Pesanan Snack Box Rapat (30 Box)', qty: 30, price: 20000 },
-                    { type: 'KELUAR', name: 'Belanja Ayam Potong, Sayur & Bumbu', qty: 1, price: 750000 },
-                    { type: 'KELUAR', name: 'Kemasan Box, Plastik & Ongkir Kurir', qty: 1, price: 200000 }
-                ]
-            },
-            {
-                id: 'kas-104',
-                date: '2026-11-05',
-                title: 'Pembayaran Cicilan Alat & Beli Peralatan Kerja',
-                saldoMasuk: 350000,
-                saldoKeluar: 1150000,
-                notes: 'Pengeluaran lebih besar dari pemasukan hari ini (Minus/Defisit harian).',
-                items: [
-                    { type: 'MASUK', name: 'Komisi Penjualan Reseller', qty: 1, price: 350000 },
-                    { type: 'KELUAR', name: 'Beli Printer Thermal Struk Kasir', qty: 1, price: 650000 },
-                    { type: 'KELUAR', name: 'Kertas Thermal 10 Roll & Alat Tulis', qty: 1, price: 200000 },
-                    { type: 'KELUAR', name: 'Biaya Iklan Promosi Sosial Media', qty: 1, price: 300000 }
-                ]
-            },
-            {
-                id: 'kas-105',
-                date: '2026-11-07',
-                title: 'Pelunasan Proyek Desain Web & Langganan Software',
-                saldoMasuk: 3200000,
-                saldoKeluar: 450000,
-                notes: 'Klien melunasi invoice tahap akhir.',
-                items: [
-                    { type: 'MASUK', name: 'Pelunasan Proyek Website Toko Online', qty: 1, price: 3200000 },
-                    { type: 'KELUAR', name: 'Perpanjangan Hosting & Domain 1 Tahun', qty: 1, price: 300000 },
-                    { type: 'KELUAR', name: 'Konsumsi Lembur & Kopi Tim', qty: 1, price: 150000 }
-                ]
-            }
-        ];
-
+        // Setiap pengguna mulai dari Saldo Awal Rp 0 dan Tabel Kosong []
+        let currentUser = null; // { username, businessName, password }
         let rawEntries = [];
-        let initialBookBalance = DEFAULT_INITIAL_BALANCE;
+        let initialBookBalance = 0;
         let expandedIds = new Set();
         let allExpanded = false;
-        let adminCreds = { username: 'admin', password: 'admin123' };
 
         // =========================================================================
-        // SISTEM AUTENTIKASI ADMIN & NAVIGASI VIEW
+        // SISTEM MULTI-USER: PENDAFTARAN (REGISTER) & LOGIN MANDIRI
         // =========================================================================
-        function loadAuthCredentials() {
+        function getRegisteredUsers() {
             try {
-                const savedCreds = localStorage.getItem(STORAGE_AUTH_CRED_KEY);
-                if (savedCreds) {
-                    adminCreds = JSON.parse(savedCreds);
-                }
+                const raw = localStorage.getItem(STORAGE_USERS_KEY);
+                return raw ? JSON.parse(raw) : [];
             } catch (e) {
-                adminCreds = { username: 'admin', password: 'admin123' };
+                return [];
             }
         }
 
-        function checkSessionOnLoad() {
-            loadAuthCredentials();
-            const isLogged = localStorage.getItem(STORAGE_SESSION_KEY) === 'true' || sessionStorage.getItem(STORAGE_SESSION_KEY) === 'true';
-            if (isLogged) {
-                enterAdminDashboard(false);
+        function saveRegisteredUsers(usersList) {
+            try {
+                localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(usersList));
+            } catch (e) {
+                console.error('Gagal menyimpan daftar pengguna:', e);
+            }
+        }
+
+        function switchAuthTab(mode) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const tabLogin = document.getElementById('tabBtnLogin');
+            const tabReg = document.getElementById('tabBtnRegister');
+            const alertBox = document.getElementById('authAlertBox');
+
+            alertBox.classList.add('hidden');
+
+            if (mode === 'REGISTER') {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                tabReg.className = 'py-2.5 rounded-xl bg-white text-slate-900 shadow-xs transition-all flex items-center justify-center gap-1.5';
+                tabLogin.className = 'py-2.5 rounded-xl text-slate-500 hover:text-slate-800 transition-all flex items-center justify-center gap-1.5';
+                setTimeout(() => document.getElementById('regBusinessName').focus(), 80);
             } else {
-                showLandingPage();
+                registerForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+                tabLogin.className = 'py-2.5 rounded-xl bg-white text-slate-900 shadow-xs transition-all flex items-center justify-center gap-1.5';
+                tabReg.className = 'py-2.5 rounded-xl text-slate-500 hover:text-slate-800 transition-all flex items-center justify-center gap-1.5';
+                setTimeout(() => document.getElementById('loginUsername').focus(), 80);
             }
         }
 
-        function showLandingPage() {
-            document.getElementById('landingView').classList.remove('hidden');
-            document.getElementById('adminAppView').classList.add('hidden');
-            document.getElementById('adminAppView').classList.remove('flex');
-        }
+        function showAuthAlert(message, type = 'ERROR') {
+            const box = document.getElementById('authAlertBox');
+            const icon = document.getElementById('authAlertIcon');
+            const text = document.getElementById('authAlertText');
 
-        function enterAdminDashboard(notify = true) {
-            document.getElementById('landingView').classList.add('hidden');
-            const appView = document.getElementById('adminAppView');
-            appView.classList.remove('hidden');
-            appView.classList.add('flex');
-            document.getElementById('activeAdminBadge').textContent = adminCreds.username;
-            closeLoginModal();
-            populateMonthFilter();
-            applyFilters();
-            if (notify) {
-                showToast(`Selamat datang kembali, ${adminCreds.username}!`);
+            text.textContent = message;
+            box.classList.remove('hidden');
+
+            if (type === 'SUCCESS') {
+                box.className = 'p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium flex items-center gap-2';
+                icon.className = 'ph-fill ph-check-circle text-base shrink-0 text-emerald-600';
+            } else {
+                box.className = 'p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-center gap-2';
+                icon.className = 'ph-fill ph-warning-circle text-base shrink-0 text-rose-600';
             }
         }
 
-        function openLoginModal() {
-            document.getElementById('loginErrorAlert').classList.add('hidden');
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPassword').value = '';
-            document.getElementById('loginModal').classList.remove('hidden');
-            setTimeout(() => document.getElementById('loginUsername').focus(), 100);
-        }
+        function handleRegisterSubmit(e) {
+            e.preventDefault();
+            const businessName = document.getElementById('regBusinessName').value.trim();
+            const username = document.getElementById('regUsername').value.trim().toLowerCase().replace(/\s+/g, '');
+            const password = document.getElementById('regPassword').value;
 
-        function closeLoginModal() {
-            document.getElementById('loginModal').classList.add('hidden');
-        }
+            if (!businessName || !username || !password) {
+                showAuthAlert('Mohon lengkapi seluruh kolom pendaftaran.');
+                return;
+            }
 
-        function fillDefaultCredentials() {
-            document.getElementById('loginUsername').value = adminCreds.username;
-            document.getElementById('loginPassword').value = adminCreds.password;
-            document.getElementById('loginErrorAlert').classList.add('hidden');
-        }
+            const users = getRegisteredUsers();
+            const exists = users.some(u => u.username.toLowerCase() === username);
+            if (exists) {
+                showAuthAlert(`Username "${username}" sudah terdaftar. Silakan gunakan username lain.`);
+                return;
+            }
 
-        function quickDemoLogin() {
-            loadAuthCredentials();
-            localStorage.setItem(STORAGE_SESSION_KEY, 'true');
-            enterAdminDashboard(true);
+            const newUser = {
+                username: username,
+                businessName: businessName,
+                password: password,
+                createdAt: new Date().toISOString()
+            };
+
+            users.push(newUser);
+            saveRegisteredUsers(users);
+
+            // Inisialisasi data buku kas kosong (Rp 0 dan tanpa contoh) untuk user baru
+            localStorage.setItem(`BUKUKASKU_INIT_BAL_${username}`, '0');
+            localStorage.setItem(`BUKUKASKU_ENTRIES_${username}`, JSON.stringify([]));
+
+            // Langsung login ke akun baru
+            currentUser = newUser;
+            localStorage.setItem(STORAGE_ACTIVE_USER_KEY, username);
+            document.getElementById('registerForm').reset();
+            enterUserDashboard(true, `Akun "${businessName}" berhasil dibuat!`);
         }
 
         function handleLoginSubmit(e) {
             e.preventDefault();
-            const u = document.getElementById('loginUsername').value.trim();
+            const u = document.getElementById('loginUsername').value.trim().toLowerCase();
             const p = document.getElementById('loginPassword').value;
             const remember = document.getElementById('rememberSession').checked;
 
-            if (u === adminCreds.username && p === adminCreds.password) {
-                if (remember) {
-                    localStorage.setItem(STORAGE_SESSION_KEY, 'true');
-                } else {
-                    sessionStorage.setItem(STORAGE_SESSION_KEY, 'true');
-                }
-                enterAdminDashboard(true);
+            const users = getRegisteredUsers();
+            if (users.length === 0) {
+                showAuthAlert('Belum ada akun terdaftar di perangkat ini. Silakan klik tab "Daftar Akun" terlebih dahulu.');
+                return;
+            }
+
+            const matched = users.find(acc => acc.username.toLowerCase() === u && acc.password === p);
+            if (!matched) {
+                showAuthAlert('Username atau password salah. Pastikan Anda sudah mendaftar.');
+                return;
+            }
+
+            currentUser = matched;
+            if (remember) {
+                localStorage.setItem(STORAGE_ACTIVE_USER_KEY, matched.username);
             } else {
-                const errBox = document.getElementById('loginErrorAlert');
-                document.getElementById('loginErrorText').textContent = 'Username atau password tidak sesuai!';
-                errBox.classList.remove('hidden');
+                sessionStorage.setItem(STORAGE_ACTIVE_USER_KEY, matched.username);
+            }
+
+            document.getElementById('loginForm').reset();
+            enterUserDashboard(true, `Selamat datang, ${matched.businessName}!`);
+        }
+
+        function checkSessionOnLoad() {
+            const savedUsername = localStorage.getItem(STORAGE_ACTIVE_USER_KEY) || sessionStorage.getItem(STORAGE_ACTIVE_USER_KEY);
+            const users = getRegisteredUsers();
+
+            if (savedUsername) {
+                const found = users.find(u => u.username === savedUsername);
+                if (found) {
+                    currentUser = found;
+                    enterUserDashboard(false);
+                    return;
+                }
+            }
+
+            // Jika belum ada satupun akun terdaftar, arahkan langsung ke tab Daftar Akun agar konsumen mudah mulai
+            showAuthPortal();
+            if (users.length === 0) {
+                switchAuthTab('REGISTER');
+            } else {
+                switchAuthTab('LOGIN');
+            }
+        }
+
+        function showAuthPortal() {
+            document.getElementById('authPortalView').classList.remove('hidden');
+            document.getElementById('adminAppView').classList.add('hidden');
+            document.getElementById('adminAppView').classList.remove('flex');
+        }
+
+        function enterUserDashboard(notify = true, customMsg = '') {
+            loadDataForCurrentUser();
+
+            document.getElementById('authPortalView').classList.add('hidden');
+            const appView = document.getElementById('adminAppView');
+            appView.classList.remove('hidden');
+            appView.classList.add('flex');
+
+            document.getElementById('activeBusinessTitle').textContent = currentUser.businessName || 'BukuKasKu Pro';
+            document.getElementById('activeAdminBadge').textContent = '@' + currentUser.username;
+            document.getElementById('printReportTitle').textContent = `Laporan Pembukuan Kas — ${currentUser.businessName}`;
+
+            populateMonthFilter();
+            applyFilters();
+
+            if (notify && customMsg) {
+                showToast(customMsg);
             }
         }
 
         function logoutAdmin() {
-            localStorage.removeItem(STORAGE_SESSION_KEY);
-            sessionStorage.removeItem(STORAGE_SESSION_KEY);
-            showLandingPage();
-            showToast('Anda telah keluar dari sesi Admin');
+            localStorage.removeItem(STORAGE_ACTIVE_USER_KEY);
+            sessionStorage.removeItem(STORAGE_ACTIVE_USER_KEY);
+            currentUser = null;
+            rawEntries = [];
+            initialBookBalance = 0;
+            showAuthPortal();
+            switchAuthTab('LOGIN');
+            showToast('Anda telah keluar dari sesi pembukuan');
         }
 
         function togglePasswordVisibility(inputId, iconId) {
@@ -1103,8 +909,10 @@
         }
 
         function openAdminSettingsModal() {
-            document.getElementById('newAdminUser').value = adminCreds.username;
-            document.getElementById('newAdminPass').value = adminCreds.password;
+            if (!currentUser) return;
+            document.getElementById('settingsUsernameReadonly').value = '@' + currentUser.username;
+            document.getElementById('newBusinessName').value = currentUser.businessName || '';
+            document.getElementById('newAdminPass').value = currentUser.password || '';
             document.getElementById('adminSettingsModal').classList.remove('hidden');
         }
 
@@ -1114,45 +922,63 @@
 
         function saveAdminCredentials(e) {
             e.preventDefault();
-            const newUser = document.getElementById('newAdminUser').value.trim();
-            const newPass = document.getElementById('newAdminPass').value;
-            if (!newUser || !newPass) return;
+            if (!currentUser) return;
 
-            adminCreds = { username: newUser, password: newPass };
-            localStorage.setItem(STORAGE_AUTH_CRED_KEY, JSON.stringify(adminCreds));
-            document.getElementById('activeAdminBadge').textContent = adminCreds.username;
+            const newBiz = document.getElementById('newBusinessName').value.trim();
+            const newPass = document.getElementById('newAdminPass').value;
+            if (!newBiz || !newPass) return;
+
+            const users = getRegisteredUsers();
+            const idx = users.findIndex(u => u.username === currentUser.username);
+            if (idx !== -1) {
+                users[idx].businessName = newBiz;
+                users[idx].password = newPass;
+                saveRegisteredUsers(users);
+                currentUser = users[idx];
+            }
+
+            document.getElementById('activeBusinessTitle').textContent = currentUser.businessName;
+            document.getElementById('printReportTitle').textContent = `Laporan Pembukuan Kas — ${currentUser.businessName}`;
             closeAdminSettingsModal();
-            showToast('Username & Password Admin berhasil diperbarui');
+            showToast('Profil usaha & password berhasil diperbarui');
         }
 
         // =========================================================================
-        // LOAD, SAVE & HYBRID CLOUD (GOOGLE APPS SCRIPT / LOCALSTORAGE)
+        // LOAD, SAVE & HYBRID CLOUD PER PENGGUNA (TANPA DATA CONTOH)
         // =========================================================================
         function isGoogleAppsScriptEnv() {
             return typeof google !== 'undefined' && google.script && google.script.run;
         }
 
-        function loadData() {
-            try {
-                const savedInit = localStorage.getItem(STORAGE_INIT_BAL_KEY);
-                initialBookBalance = savedInit !== null ? Number(savedInit) : DEFAULT_INITIAL_BALANCE;
+        function getUserInitBalKey() {
+            return `BUKUKASKU_INIT_BAL_${currentUser ? currentUser.username : 'guest'}`;
+        }
 
-                const savedEntries = localStorage.getItem(STORAGE_ENTRIES_KEY);
+        function getUserEntriesKey() {
+            return `BUKUKASKU_ENTRIES_${currentUser ? currentUser.username : 'guest'}`;
+        }
+
+        function loadDataForCurrentUser() {
+            if (!currentUser) return;
+            expandedIds.clear();
+
+            try {
+                const savedInit = localStorage.getItem(getUserInitBalKey());
+                initialBookBalance = savedInit !== null ? Number(savedInit) : 0;
+
+                const savedEntries = localStorage.getItem(getUserEntriesKey());
                 if (savedEntries) {
                     rawEntries = JSON.parse(savedEntries);
                 } else {
-                    rawEntries = JSON.parse(JSON.stringify(INITIAL_ENTRIES));
+                    rawEntries = [];
                     saveData(false);
                 }
             } catch (e) {
-                initialBookBalance = DEFAULT_INITIAL_BALANCE;
-                rawEntries = JSON.parse(JSON.stringify(INITIAL_ENTRIES));
+                initialBookBalance = 0;
+                rawEntries = [];
             }
 
             document.getElementById('initialBalanceInput').value = initialBookBalance;
-            if (rawEntries.length > 0 && expandedIds.size === 0) {
-                expandedIds.add(rawEntries[0].id);
-            }
 
             // Jika berjalan di dalam Google Apps Script, otomatis cek data Cloud
             if (isGoogleAppsScriptEnv()) {
@@ -1161,9 +987,10 @@
                     if (cloudJson) {
                         try {
                             const parsed = JSON.parse(cloudJson);
-                            if (Array.isArray(parsed.entries)) {
-                                rawEntries = parsed.entries;
-                                initialBookBalance = Number(parsed.initialBalance) || DEFAULT_INITIAL_BALANCE;
+                            const userCloud = parsed[currentUser.username];
+                            if (userCloud && Array.isArray(userCloud.entries)) {
+                                rawEntries = userCloud.entries;
+                                initialBookBalance = Number(userCloud.initialBalance) || 0;
                                 document.getElementById('initialBalanceInput').value = initialBookBalance;
                                 populateMonthFilter();
                                 applyFilters();
@@ -1175,18 +1002,22 @@
         }
 
         function saveData(syncCloud = true) {
+            if (!currentUser) return;
             try {
-                localStorage.setItem(STORAGE_INIT_BAL_KEY, String(initialBookBalance));
-                localStorage.setItem(STORAGE_ENTRIES_KEY, JSON.stringify(rawEntries));
+                localStorage.setItem(getUserInitBalKey(), String(initialBookBalance));
+                localStorage.setItem(getUserEntriesKey(), JSON.stringify(rawEntries));
             } catch (e) {
                 console.error('Gagal menyimpan data:', e);
             }
 
             if (syncCloud && isGoogleAppsScriptEnv()) {
                 const payload = JSON.stringify({
-                    initialBalance: initialBookBalance,
-                    entries: rawEntries,
-                    updatedAt: new Date().toISOString()
+                    [currentUser.username]: {
+                        businessName: currentUser.businessName,
+                        initialBalance: initialBookBalance,
+                        entries: rawEntries,
+                        updatedAt: new Date().toISOString()
+                    }
                 });
                 google.script.run.simpanKeSheet(payload);
             }
@@ -1242,7 +1073,7 @@
                         const parsed = JSON.parse(cloudJson);
                         if (Array.isArray(parsed.entries)) {
                             rawEntries = parsed.entries;
-                            initialBookBalance = Number(parsed.initialBalance) || DEFAULT_INITIAL_BALANCE;
+                            initialBookBalance = Number(parsed.initialBalance) || 0;
                             document.getElementById('initialBalanceInput').value = initialBookBalance;
                             saveData(false);
                             populateMonthFilter();
@@ -1477,12 +1308,12 @@
             if (rows.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="8" class="py-12 text-center text-slate-400">
-                            <div class="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-2 text-slate-400">
+                        <td colspan="8" class="py-14 text-center text-slate-400">
+                            <div class="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-2.5 text-slate-400">
                                 <i class="ph-duotone ph-notebook text-2xl"></i>
                             </div>
-                            <p class="font-semibold text-slate-600 text-sm">Belum ada catatan keuangan yang sesuai filter</p>
-                            <p class="text-xs mt-0.5">Klik tombol "Tambah Catatan Baru" untuk mulai mencatat.</p>
+                            <p class="font-bold text-slate-700 text-sm">Belum ada catatan transaksi.</p>
+                            <p class="text-xs text-slate-500 mt-1">Silakan atur <b>Modal / Saldo Awal Pembukuan</b> di atas atau klik tombol <b>"Tambah Catatan Baru"</b> untuk memulai pembukuan.</p>
                         </td>
                     </tr>
                 `;
@@ -1682,170 +1513,7 @@
         }
 
         // =========================================================================
-        // FORM MODAL & KALKULATOR RINCIAN ITEM
-        // =========================================================================
-        function openTransactionModal(editRow = null) {
-            const modal = document.getElementById('transactionModal');
-            const form = document.getElementById('transactionForm');
-            const subContainer = document.getElementById('subItemsContainer');
-            form.reset();
-            subContainer.innerHTML = '';
-
-            if (editRow) {
-                document.getElementById('modalTitle').textContent = 'Edit Catatan Keuangan';
-                document.getElementById('entryId').value = editRow.id;
-                document.getElementById('entryDate').value = editRow.date;
-                document.getElementById('entryTitle').value = editRow.title;
-                document.getElementById('entrySaldoMasuk').value = editRow.saldoMasuk;
-                document.getElementById('entrySaldoKeluar').value = editRow.saldoKeluar;
-                document.getElementById('entryNotes').value = editRow.notes || '';
-
-                if (Array.isArray(editRow.items) && editRow.items.length > 0) {
-                    editRow.items.forEach(it => addSubItemRow(it.type, it.name, it.qty, it.price));
-                }
-            } else {
-                document.getElementById('modalTitle').textContent = 'Tambah Catatan Keuangan Baru';
-                document.getElementById('entryId').value = '';
-                document.getElementById('entryDate').value = new Date().toISOString().split('T')[0];
-                document.getElementById('entrySaldoMasuk').value = 0;
-                document.getElementById('entrySaldoKeluar').value = 0;
-                addSubItemRow('MASUK', '', 1, '');
-            }
-
-            updateLiveNetPreview();
-            modal.classList.remove('hidden');
-        }
-
-        function closeTransactionModal() {
-            document.getElementById('transactionModal').classList.add('hidden');
-        }
-
-        function addSubItemRow(type = 'MASUK', name = '', qty = 1, price = '') {
-            const container = document.getElementById('subItemsContainer');
-            const row = document.createElement('div');
-            row.className = 'grid grid-cols-12 gap-2 items-center sub-item-row bg-white p-2 rounded-xl border border-slate-200';
-            row.innerHTML = `
-                <div class="col-span-12 sm:col-span-3">
-                    <select onchange="recalculateFromSubItems()" class="item-type w-full px-2 py-1.5 rounded-lg text-xs font-bold border border-slate-300 outline-none">
-                        <option value="MASUK" ${type === 'MASUK' ? 'selected' : ''}>+ SALDO MASUK</option>
-                        <option value="KELUAR" ${type === 'KELUAR' ? 'selected' : ''}>- SALDO KELUAR</option>
-                    </select>
-                </div>
-                <div class="col-span-12 sm:col-span-4">
-                    <input type="text" placeholder="Nama item rincian..." value="${escapeHtml(name)}" oninput="recalculateFromSubItems()" class="item-name w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs focus:bg-white outline-none">
-                </div>
-                <div class="col-span-4 sm:col-span-2">
-                    <input type="number" min="1" placeholder="Qty" value="${qty}" oninput="recalculateFromSubItems()" class="item-qty w-full px-2 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-center focus:bg-white outline-none">
-                </div>
-                <div class="col-span-6 sm:col-span-2">
-                    <input type="number" min="0" placeholder="Harga (Rp)" value="${price}" oninput="recalculateFromSubItems()" class="item-price w-full px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs focus:bg-white outline-none">
-                </div>
-                <div class="col-span-2 sm:col-span-1 flex justify-end">
-                    <button type="button" onclick="this.closest('.sub-item-row').remove(); recalculateFromSubItems();" class="text-slate-400 hover:text-rose-600 p-1" title="Hapus Item">
-                        <i class="ph-bold ph-trash text-sm"></i>
-                    </button>
-                </div>
-            `;
-            container.appendChild(row);
-        }
-
-        function recalculateFromSubItems() {
-            const rows = document.querySelectorAll('.sub-item-row');
-            let sumMasuk = 0;
-            let sumKeluar = 0;
-            let hasValidItem = false;
-
-            rows.forEach(r => {
-                const type = r.querySelector('.item-type').value;
-                const name = r.querySelector('.item-name').value.trim();
-                const qty = parseFloat(r.querySelector('.item-qty').value) || 0;
-                const price = parseFloat(r.querySelector('.item-price').value) || 0;
-
-                if (name !== '' || price > 0) {
-                    hasValidItem = true;
-                    const sub = qty * price;
-                    if (type === 'MASUK') sumMasuk += sub;
-                    else sumKeluar += sub;
-                }
-            });
-
-            if (hasValidItem) {
-                document.getElementById('entrySaldoMasuk').value = sumMasuk;
-                document.getElementById('entrySaldoKeluar').value = sumKeluar;
-            }
-            updateLiveNetPreview();
-        }
-
-        function updateLiveNetPreview() {
-            const masuk = parseFloat(document.getElementById('entrySaldoMasuk').value) || 0;
-            const keluar = parseFloat(document.getElementById('entrySaldoKeluar').value) || 0;
-            const diff = masuk - keluar;
-
-            const previewEl = document.getElementById('liveNetPreview');
-            const statusEl = document.getElementById('liveNetStatus');
-
-            previewEl.textContent = formatLabaMinus(diff);
-            if (diff > 0) {
-                previewEl.className = 'text-base font-bold text-emerald-600 mt-0.5';
-                statusEl.textContent = 'Surplus / Laba (+)';
-                statusEl.className = 'text-[10px] font-semibold text-emerald-600';
-            } else if (diff < 0) {
-                previewEl.className = 'text-base font-bold text-rose-600 mt-0.5';
-                statusEl.textContent = 'Defisit / Minus (-)';
-                statusEl.className = 'text-[10px] font-semibold text-rose-600';
-            } else {
-                previewEl.className = 'text-base font-bold text-slate-700 mt-0.5';
-                statusEl.textContent = 'Seimbang (Rp 0)';
-                statusEl.className = 'text-[10px] text-slate-500';
-            }
-        }
-
-        function saveTransaction(e) {
-            e.preventDefault();
-            const id = document.getElementById('entryId').value;
-            const date = document.getElementById('entryDate').value;
-            const title = document.getElementById('entryTitle').value.trim();
-            const saldoMasuk = parseFloat(document.getElementById('entrySaldoMasuk').value) || 0;
-            const saldoKeluar = parseFloat(document.getElementById('entrySaldoKeluar').value) || 0;
-            const notes = document.getElementById('entryNotes').value.trim();
-
-            const items = [];
-            document.querySelectorAll('.sub-item-row').forEach(r => {
-                const type = r.querySelector('.item-type').value;
-                const name = r.querySelector('.item-name').value.trim();
-                const qty = parseFloat(r.querySelector('.item-qty').value) || 1;
-                const price = parseFloat(r.querySelector('.item-price').value) || 0;
-                if (name !== '' && price > 0) {
-                    items.push({ type, name, qty, price });
-                }
-            });
-
-            if (id) {
-                const idx = rawEntries.findIndex(item => item.id === id);
-                if (idx !== -1) {
-                    rawEntries[idx] = { id, date, title, saldoMasuk, saldoKeluar, notes, items };
-                }
-                showToast('Catatan keuangan berhasil diperbarui');
-            } else {
-                const newId = 'kas-' + Date.now();
-                rawEntries.push({ id: newId, date, title, saldoMasuk, saldoKeluar, notes, items });
-                if (items.length > 0) expandedIds.add(newId);
-                showToast('Catatan baru ditambahkan & saldo dihitung ulang');
-            }
-
-            saveData();
-            populateMonthFilter();
-            applyFilters();
-            closeTransactionModal();
-        }
-
-        function editEntry(id) {
-            const entry = rawEntries.find(e => e.id === id);
-            if (entry) openTransactionModal(entry);
-        }
-
-        // =========================================================================
-        // KONFIRMASI HAPUS & RESET
+        // KONFIRMASI HAPUS BARIS CATATAN
         // =========================================================================
         function confirmDeleteEntry(id) {
             const entry = rawEntries.find(e => e.id === id);
@@ -1862,25 +1530,6 @@
                 applyFilters();
                 closeConfirmModal();
                 showToast('Catatan dihapus & urutan saldo diperbarui');
-            };
-            document.getElementById('confirmModal').classList.remove('hidden');
-        }
-
-        function openResetModal() {
-            document.getElementById('confirmTitle').textContent = 'Reset ke Data Contoh Awal?';
-            document.getElementById('confirmMessage').textContent = 'Semua catatan Anda akan dikembalikan ke data contoh awal beserta Saldo Awal Rp 5.000.000.';
-            const btn = document.getElementById('confirmActionBtn');
-            btn.onclick = () => {
-                initialBookBalance = DEFAULT_INITIAL_BALANCE;
-                document.getElementById('initialBalanceInput').value = initialBookBalance;
-                rawEntries = JSON.parse(JSON.stringify(INITIAL_ENTRIES));
-                expandedIds.clear();
-                if (rawEntries.length > 0) expandedIds.add(rawEntries[0].id);
-                saveData();
-                populateMonthFilter();
-                applyFilters();
-                closeConfirmModal();
-                showToast('Data berhasil direset ke contoh awal');
             };
             document.getElementById('confirmModal').classList.remove('hidden');
         }
@@ -1970,7 +1619,6 @@
         }
 
         window.onload = function () {
-            loadData();
             checkSessionOnLoad();
         };
     </script>
