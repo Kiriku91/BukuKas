@@ -76,125 +76,136 @@
 <body class="text-slate-800 antialiased min-h-screen flex flex-col">
 
     <!-- =====================================================================
-         BAGIAN 1: PORTAL LOGIN & PENDAFTARAN BERSIH (Tampil Sebelum Login)
+         BAGIAN 1: PORTAL LOGIN & PENDAFTARAN RINGKAS BERWARNA (max-w-sm)
     ====================================================================== -->
-    <div id="authPortalView" class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 p-4">
-                    <div class="w-12 h-12 rounded-2xl bg-brand-600 flex items-center justify-center text-white mx-auto shadow-lg shadow-brand-500/30">
+    <div id="authPortalView" class="min-h-screen relative overflow-hidden flex flex-col items-center justify-center bg-gradient-to-br from-indigo-950 via-slate-900 to-emerald-950 p-4">
+        
+        <!-- Aksen Glow Dekoratif di Latar Belakang -->
+        <div class="pointer-events-none absolute -top-24 -left-24 w-80 h-80 rounded-full bg-indigo-500/25 blur-3xl"></div>
+        <div class="pointer-events-none absolute -bottom-24 -right-24 w-80 h-80 rounded-full bg-emerald-500/25 blur-3xl"></div>
+        <div class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-teal-500/10 blur-3xl"></div>
+
+        <!-- Kartu Utama Ringkas (max-w-sm) -->
+        <div class="relative z-10 w-full max-w-sm bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl shadow-black/40 border border-white/20 overflow-hidden">
+            
+            <!-- Header Kartu Berwarna Gradasi -->
+            <div class="bg-gradient-to-r from-indigo-600 via-teal-600 to-emerald-600 px-5 py-5 text-center text-white relative overflow-hidden">
+                <div class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-xs border border-white/30 flex items-center justify-center text-white mx-auto shadow-md">
                     <i class="ph-bold ph-notebook text-2xl"></i>
                 </div>
-                <div class="flex items-center justify-center gap-1.5 pt-1">
-                    <h1 class="font-extrabold text-xl tracking-tight text-white">BukuKasKu</h1>
-                    <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">CLOUD PRO</span>
+                <div class="flex items-center justify-center gap-1.5 mt-2">
+                    <h1 class="font-extrabold text-lg tracking-tight text-white">BukuKasKu</h1>
+                    <span class="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-amber-300 text-slate-900 shadow-2xs">PRO</span>
                 </div>
-                <p class="text-xs text-slate-400">Sistem Pembukuan Kas & Rincian Terhubung Google Sheets</p>
-                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-800/90 border border-slate-700 text-[10px] text-emerald-400 font-medium">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>Server Cloud Google Sheets Aktif</span>
+                <p class="text-[11px] text-emerald-50/90 mt-0.5">Pembukuan Kas & Rincian Cloud</p>
+                <div class="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/25 border border-white/15 text-[10px] text-emerald-200 font-medium">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
+                    <span>Google Sheets Cloud Aktif</span>
                 </div>
             </div>
 
             <!-- Tab Navigasi: Masuk vs Daftar Akun Baru -->
-            <div class="grid grid-cols-2 bg-slate-100 p-1.5 m-5 mb-0 rounded-2xl border border-slate-200/80 text-xs font-bold">
-                <button type="button" id="tabBtnLogin" onclick="switchAuthTab('LOGIN')" class="py-2.5 rounded-xl bg-white text-slate-900 shadow-xs transition-all flex items-center justify-center gap-1.5">
-                    <i class="ph-bold ph-sign-in text-sm text-brand-600"></i>
-                    <span>Masuk (Login)</span>
+            <div class="grid grid-cols-2 bg-slate-100 p-1 mx-5 mt-4 rounded-xl border border-slate-200/80 text-xs font-bold">
+                <button type="button" id="tabBtnLogin" onclick="switchAuthTab('LOGIN')" class="py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-emerald-600 text-white shadow-xs transition-all flex items-center justify-center gap-1.5">
+                    <i class="ph-bold ph-sign-in text-sm"></i>
+                    <span>Masuk</span>
                 </button>
-                <button type="button" id="tabBtnRegister" onclick="switchAuthTab('REGISTER')" class="py-2.5 rounded-xl text-slate-500 hover:text-slate-800 transition-all flex items-center justify-center gap-1.5">
+                <button type="button" id="tabBtnRegister" onclick="switchAuthTab('REGISTER')" class="py-2 rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center justify-center gap-1.5">
                     <i class="ph-bold ph-user-plus text-sm"></i>
                     <span>Daftar Akun</span>
                 </button>
             </div>
 
             <!-- Notifikasi Alert Error / Sukses -->
-            <div class="px-6 pt-4">
-                <div id="authAlertBox" class="hidden p-3 rounded-xl text-xs font-medium flex items-center gap-2">
+            <div class="px-5 pt-3">
+                <div id="authAlertBox" class="hidden p-2.5 rounded-xl text-xs font-medium flex items-center gap-2">
                     <i id="authAlertIcon" class="ph-fill ph-warning-circle text-base shrink-0"></i>
                     <span id="authAlertText">Pesan notifikasi</span>
                 </div>
             </div>
 
             <!-- FORM 1: LOGIN PENGGUNA -->
-            <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="p-6 pt-4 space-y-4">
+            <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="p-5 pt-3 space-y-3.5">
                 <div>
                     <label for="loginUsername" class="block text-xs font-bold text-slate-700 mb-1">Username</label>
                     <div class="relative">
-                        <i class="ph ph-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
-                        <input type="text" id="loginUsername" required autocomplete="username" placeholder="Masukkan username Anda..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                        <i class="ph-duotone ph-user absolute left-3 top-1/2 -translate-y-1/2 text-indigo-500 text-base"></i>
+                        <input type="text" id="loginUsername" required autocomplete="username" placeholder="Masukkan username..." class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
                     </div>
                 </div>
 
                 <div>
                     <label for="loginPassword" class="block text-xs font-bold text-slate-700 mb-1">Password</label>
                     <div class="relative">
-                        <i class="ph ph-lock-key absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
-                        <input type="password" id="loginPassword" required autocomplete="current-password" placeholder="Masukkan password..." class="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
-                        <button type="button" onclick="togglePasswordVisibility('loginPassword', 'eyeLoginIcon')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                        <i class="ph-duotone ph-lock-key absolute left-3 top-1/2 -translate-y-1/2 text-indigo-500 text-base"></i>
+                        <input type="password" id="loginPassword" required autocomplete="current-password" placeholder="Masukkan password..." class="w-full pl-9 pr-9 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+                        <button type="button" onclick="togglePasswordVisibility('loginPassword', 'eyeLoginIcon')" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                             <i id="eyeLoginIcon" class="ph ph-eye text-base"></i>
                         </button>
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between text-xs pt-1">
-                    <label class="inline-flex items-center gap-2 text-slate-600 cursor-pointer">
-                        <input type="checkbox" id="rememberSession" checked class="rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+                <div class="flex items-center justify-between text-xs">
+                    <label class="inline-flex items-center gap-1.5 text-slate-600 cursor-pointer">
+                        <input type="checkbox" id="rememberSession" checked class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
                         <span>Ingat sesi masuk saya</span>
                     </label>
                 </div>
 
-                <button type="submit" id="btnSubmitLogin" class="w-full py-3 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-60">
+                <button type="submit" id="btnSubmitLogin" class="w-full py-2.5 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-indigo-600 via-teal-600 to-emerald-600 hover:from-indigo-700 hover:to-emerald-700 rounded-xl shadow-md shadow-indigo-500/25 transition-all flex items-center justify-center gap-2 disabled:opacity-60">
                     <i class="ph-bold ph-sign-in text-base"></i>
-                    <span>Masuk & Ambil Data Cloud</span>
+                    <span>Masuk Aplikasi</span>
                 </button>
 
-                <p class="text-center text-xs text-slate-500 pt-2">
+                <p class="text-center text-[11px] text-slate-500 pt-1">
                     Belum punya akun? 
-                    <button type="button" onclick="switchAuthTab('REGISTER')" class="font-bold text-brand-600 hover:underline">Daftar akun baru di sini</button>
+                    <button type="button" onclick="switchAuthTab('REGISTER')" class="font-bold text-indigo-600 hover:text-emerald-600 hover:underline">Daftar baru di sini</button>
                 </p>
             </form>
 
             <!-- FORM 2: PENDAFTARAN AKUN BARU (REGISTER) -->
-            <form id="registerForm" onsubmit="handleRegisterSubmit(event)" class="hidden p-6 pt-4 space-y-4">
+            <form id="registerForm" onsubmit="handleRegisterSubmit(event)" class="hidden p-5 pt-3 space-y-3.5">
                 <div>
                     <label for="regBusinessName" class="block text-xs font-bold text-slate-700 mb-1">Nama Usaha / Nama Lengkap <span class="text-rose-500">*</span></label>
                     <div class="relative">
-                        <i class="ph ph-storefront absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
-                        <input type="text" id="regBusinessName" required placeholder="Cth: Toko Berkah Jaya / Budi Santoso" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                        <i class="ph-duotone ph-storefront absolute left-3 top-1/2 -translate-y-1/2 text-emerald-600 text-base"></i>
+                        <input type="text" id="regBusinessName" required placeholder="Cth: Toko Berkah / Budi" class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
                     </div>
                 </div>
 
                 <div>
                     <label for="regUsername" class="block text-xs font-bold text-slate-700 mb-1">Username Baru <span class="text-rose-500">*</span></label>
                     <div class="relative">
-                        <i class="ph ph-user-circle absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
-                        <input type="text" id="regUsername" required minlength="3" placeholder="Buat username tanpa spasi..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                        <i class="ph-duotone ph-user-circle absolute left-3 top-1/2 -translate-y-1/2 text-emerald-600 text-base"></i>
+                        <input type="text" id="regUsername" required minlength="3" placeholder="Username tanpa spasi..." class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
                     </div>
                 </div>
 
                 <div>
                     <label for="regPassword" class="block text-xs font-bold text-slate-700 mb-1">Password <span class="text-rose-500">*</span></label>
                     <div class="relative">
-                        <i class="ph ph-lock-key absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
-                        <input type="password" id="regPassword" required minlength="4" placeholder="Minimal 4 karakter..." class="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
-                        <button type="button" onclick="togglePasswordVisibility('regPassword', 'eyeRegIcon')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                        <i class="ph-duotone ph-lock-key absolute left-3 top-1/2 -translate-y-1/2 text-emerald-600 text-base"></i>
+                        <input type="password" id="regPassword" required minlength="4" placeholder="Minimal 4 karakter..." class="w-full pl-9 pr-9 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
+                        <button type="button" onclick="togglePasswordVisibility('regPassword', 'eyeRegIcon')" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                             <i id="eyeRegIcon" class="ph ph-eye text-base"></i>
                         </button>
                     </div>
                 </div>
 
-                <button type="submit" id="btnSubmitRegister" class="w-full py-3 text-sm font-bold text-white bg-slate-900 hover:bg-brand-600 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-60">
+                <button type="submit" id="btnSubmitRegister" class="w-full py-2.5 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-xl shadow-md shadow-emerald-500/25 transition-all flex items-center justify-center gap-2 disabled:opacity-60">
                     <i class="ph-bold ph-user-plus text-base"></i>
-                    <span>Daftar Akun ke Cloud</span>
+                    <span>Daftar Akun Baru</span>
                 </button>
 
-                <p class="text-center text-xs text-slate-500 pt-2">
+                <p class="text-center text-[11px] text-slate-500 pt-1">
                     Sudah punya akun? 
-                    <button type="button" onclick="switchAuthTab('LOGIN')" class="font-bold text-brand-600 hover:underline">Masuk di sini</button>
+                    <button type="button" onclick="switchAuthTab('LOGIN')" class="font-bold text-indigo-600 hover:underline">Masuk di sini</button>
                 </p>
             </form>
         </div>
 
-        <p class="text-[11px] text-slate-400 mt-6 text-center">
-            &copy; 2026 <b>BukuKasKu Pro</b> &mdash; Data pembukuan tersimpan terpisah untuk setiap akun.
+        <p class="relative z-10 text-[11px] text-slate-300/80 mt-4 text-center">
+            &copy; 2026 <b>BukuKasKu Pro</b> &mdash; Tersinkronisasi dengan Cloud
         </p>
     </div>
 
@@ -808,14 +819,14 @@
             if (mode === 'REGISTER') {
                 loginForm.classList.add('hidden');
                 registerForm.classList.remove('hidden');
-                tabReg.className = 'py-2.5 rounded-xl bg-white text-slate-900 shadow-xs transition-all flex items-center justify-center gap-1.5';
-                tabLogin.className = 'py-2.5 rounded-xl text-slate-500 hover:text-slate-800 transition-all flex items-center justify-center gap-1.5';
+                tabReg.className = 'py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-xs transition-all flex items-center justify-center gap-1.5';
+                tabLogin.className = 'py-2 rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center justify-center gap-1.5';
                 setTimeout(() => document.getElementById('regBusinessName').focus(), 80);
             } else {
                 registerForm.classList.add('hidden');
                 loginForm.classList.remove('hidden');
-                tabLogin.className = 'py-2.5 rounded-xl bg-white text-slate-900 shadow-xs transition-all flex items-center justify-center gap-1.5';
-                tabReg.className = 'py-2.5 rounded-xl text-slate-500 hover:text-slate-800 transition-all flex items-center justify-center gap-1.5';
+                tabLogin.className = 'py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-emerald-600 text-white shadow-xs transition-all flex items-center justify-center gap-1.5';
+                tabReg.className = 'py-2 rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center justify-center gap-1.5';
                 setTimeout(() => document.getElementById('loginUsername').focus(), 80);
             }
         }
@@ -829,14 +840,14 @@
             box.classList.remove('hidden');
 
             if (type === 'SUCCESS') {
-                box.className = 'p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium flex items-center gap-2';
-                icon.className = 'ph-fill ph-check-circle text-base shrink-0 text-emerald-600';
+                box.className = 'mb-3 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium flex items-center gap-2';
+                icon.className = 'ph-fill ph-check-circle text-sm shrink-0 text-emerald-600';
             } else if (type === 'INFO') {
-                box.className = 'p-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-xs font-medium flex items-center gap-2';
-                icon.className = 'ph-bold ph-spinner animate-spin text-base shrink-0 text-blue-600';
+                box.className = 'mb-3 p-2.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-xs font-medium flex items-center gap-2';
+                icon.className = 'ph-bold ph-spinner animate-spin text-sm shrink-0 text-blue-600';
             } else {
-                box.className = 'p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-center gap-2';
-                icon.className = 'ph-fill ph-warning-circle text-base shrink-0 text-rose-600';
+                box.className = 'mb-3 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-center gap-2';
+                icon.className = 'ph-fill ph-warning-circle text-sm shrink-0 text-rose-600';
             }
         }
 
